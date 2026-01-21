@@ -2,39 +2,24 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { Auth } from '@supabase/auth-ui-react'
 import { ThemeSupa } from '@supabase/auth-ui-shared'
 import { supabase } from '../lib/supabase'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect } from 'react'
+import { AuthContext } from '../auth/AuthContext'
 
 export const Route = createFileRoute('/login')({
   component: LoginComponent,
 })
 
 function LoginComponent() {
-  const navigate = useNavigate()
-  const [session, setSession] = useState<any>(null)
+  const { user, isLoading } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-      if (session) {
-        navigate({ to: '/' })
-      }
-    })
+    if (!isLoading && user) {
+      navigate({ to: "/dashboard" });
+    }
+  }, [user, isLoading, navigate]);
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session)
-      if (session) {
-        navigate({ to: '/' })
-      }
-    })
-
-    return () => subscription.unsubscribe()
-  }, [navigate])
-
-  if (session) {
-    return null
-  }
+  if (isLoading || user) return null;
 
   return (
     <div className="max-w-md mx-auto mt-12 p-8 bg-white rounded-xl shadow-lg border border-slate-100">
