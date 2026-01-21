@@ -8,8 +8,8 @@ export const Route = createFileRoute('/')({
 
 function Index() {
   const [session, setSession] = useState<any>(null)
-  const [functionResponse, setFunctionResponse] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
+  // const [functionResponse, setFunctionResponse] = useState<string | null>(null)
+  // const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -25,48 +25,48 @@ function Index() {
     return () => subscription.unsubscribe()
   }, [])
 
-  const callEdgeFunction = async () => {
-    setIsLoading(true)
-    setFunctionResponse(null)
-    try {
-      const { data: { session } } = await supabase.auth.getSession()
+  // const callEdgeFunction = async () => {
+  //   setIsLoading(true)
+  //   setFunctionResponse(null)
+  //   try {
+  //     const { data: { session } } = await supabase.auth.getSession()
       
-      if (!session) {
-        setFunctionResponse('Error: You must be logged in.')
-        return
-      }
+  //     if (!session) {
+  //       setFunctionResponse('Error: You must be logged in.')
+  //       return
+  //     }
 
-      const response = await fetch('http://localhost:54321/functions/v1/talktodoc-ai', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.access_token}`,
-        },
-        body: JSON.stringify({ name: session.user.email?.split('@')[0] }),
-      })
+  //     const response = await fetch('http://localhost:54321/functions/v1/talktodoc-ai', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': `Bearer ${session.access_token}`,
+  //       },
+  //       body: JSON.stringify({ name: session.user.email?.split('@')[0] }),
+  //     })
 
-      const data = await response.json()
-      if (data.error) throw new Error(data.error)
-      setFunctionResponse(data.message)
-    } catch (err: any) {
-      setFunctionResponse(`Error: ${err.message}`)
-    } finally {
-      setIsLoading(false)
-    }
-  }
+  //     const data = await response.json()
+  //     if (data.error) throw new Error(data.error)
+  //     setFunctionResponse(data.message)
+  //   } catch (err: any) {
+  //     setFunctionResponse(`Error: ${err.message}`)
+  //   } finally {
+  //     setIsLoading(false)
+  //   }
+  // }
 
   return (
     <div className="p-8 text-center min-h-[60vh] flex flex-col items-center justify-center">
       {session ? (
         <div className="space-y-6 max-w-2xl mx-auto">
-          <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400 mb-6">
+          <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 mb-6">
             Welcome, {session.user.email}!
           </h1>
           <p className="text-xl text-slate-400 leading-relaxed">
-            You are successfully logged in. Try calling your first Edge Function to see how it identifies you!
+            You are successfully logged in.
           </p>
           
-          <div className="pt-4 space-y-4">
+          {/* <div className="pt-4 space-y-4">
             <button
               onClick={callEdgeFunction}
               disabled={isLoading}
@@ -80,7 +80,7 @@ function Index() {
                 {functionResponse}
               </div>
             )}
-          </div>
+          </div> */}
 
           <div className="pt-12">
             <Link to="/about" className="text-blue-500 hover:underline text-lg">
@@ -90,18 +90,18 @@ function Index() {
         </div>
       ) : (
         <div className="space-y-6">
-          <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400 mb-6 transition-all hover:scale-105">
+          <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 mb-6 transition-all hover:scale-105">
             TalkToDoc AI
           </h1>
-          <p className="text-xl text-slate-400 max-w-lg leading-relaxed mx-auto">
-            Experience the future of document interaction. Sign in to start chatting with your medical documents.
+          <p className="text-xl text-slate-800 max-w-lg leading-relaxed mx-auto">
+            Experience the future of document interaction. Sign in to start chatting with your documents.
           </p>
           <div className="pt-8">
             <Link 
               to="/login" 
               className="inline-block bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-full text-xl shadow-lg transition-transform hover:scale-105"
             >
-              Sign In Now
+              Login
             </Link>
           </div>
         </div>
@@ -109,3 +109,4 @@ function Index() {
     </div>
   )
 }
+
