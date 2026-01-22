@@ -1,4 +1,4 @@
-import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider } from "./ui/sidebar";
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "./ui/sidebar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { ChevronsUpDown, LogOut } from "lucide-react";
@@ -15,7 +15,6 @@ export function NavUser() {
     window.location.href = "/login";
     }
     return (
-      <SidebarProvider>
         <SidebarMenu>
           <SidebarMenuItem>
             <DropdownMenu>
@@ -77,7 +76,5 @@ export function NavUser() {
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-    </SidebarProvider>
-
     )
 }
