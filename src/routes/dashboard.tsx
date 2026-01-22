@@ -1,6 +1,6 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
-import { supabase } from '../lib/supabase'
 import { Dropzone } from '../components/Dropzone'
+import { NavUser } from '@/components/NavUser'
 
 export const Route = createFileRoute('/dashboard')({
   beforeLoad: ({ context }) => {
@@ -16,34 +16,23 @@ export const Route = createFileRoute('/dashboard')({
 })
 
 function Dashboard() {
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-  }
-
   return (
-    <div className="p-8 max-w-6xl mx-auto">
-      <div className="flex justify-between items-center mb-12">
-        <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
-          TalkToDoc AI
-        </h1>
-        <div className="flex items-center space-x-6">
-          <button 
-            onClick={handleLogout}
-            className="bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white font-bold py-2 px-6 rounded-lg transition-all border border-red-500/20"
-          >
-            Logout
-          </button>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 gap-8">
-        <section className="bg-gradient-to-r from-blue-100 to-purple-100 p-10 rounded-3xl border border-slate-800 shadow-2xl backdrop-blur-md">
-          <div className="mb-8">
-            <h1 className="text-slate-800 text-2xl">Choose documents to start the AI chat</h1>
-          </div>
-          <Dropzone />
-        </section>
-      </div>
+<div className="max-w-6xl mx-auto h-screen flex gap-8">
+  <div className="w-64 h-full flex flex-col">
+    <div className="mt-auto">
+      <NavUser /> {/*posicionar o menu no final da tela depois*/}
     </div>
+  </div>
+  <div className="flex-1 flex items-center">
+    <section className="w-full max-h-[400px] flex flex-col justify-center items-center bg-gradient-to-r from-blue-100 to-purple-100 p-10 rounded-3xl border border-slate-800 shadow-2xl backdrop-blur-md">
+      <div className="mb-8">
+        <h1 className="text-slate-800 text-2xl">
+          Choose documents to start the AI chat
+        </h1>
+      </div>
+      <Dropzone />
+    </section>
+  </div>
+</div>
   )
 }
