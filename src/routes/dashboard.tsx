@@ -1,6 +1,6 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import { Dropzone } from '../components/Dropzone'
-import { AppSidebar } from '@/components/AppSidebar'
+import { AppSidebar } from '@/components/sidebarComponents/AppSidebar'
 import { SidebarProvider } from '@/components/ui/sidebar'
 
 export const Route = createFileRoute('/dashboard')({
@@ -19,18 +19,16 @@ export const Route = createFileRoute('/dashboard')({
 function Dashboard() {
   return (
 <SidebarProvider>
-<div className="max-w-6xl mx-auto h-[calc(100vh-56px)] flex gap-8 overflow-hidden">
+<div className="w-full px-4 md:px-8 h-[calc(100vh-56px)] flex gap-8 overflow-y-hidden">
   <div className="w-64 h-full flex flex-col">
     <AppSidebar />
   </div>
   <div className="flex-1 flex justify-around flex-col items-center">
-    <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
-          TalkToDoc AI
-      </h1>
       <div className="w-full h-full flex flex-col justify-center items-center">
-    <section className="w-full max-h-[400px] flex flex-col justify-center items-center bg-gradient-to-r from-blue-100 to-purple-100 p-10 rounded-3xl border border-slate-800 shadow-2xl backdrop-blur-md">
+    <section className="w-full min-h-[400px] flex flex-col justify-center items-center bg-gradient-to-r from-blue-300 to-purple-300
+ p-10 rounded-3xl border border-slate-800 shadow-2xl backdrop-blur-md hover:scale-105 transition-all">
       <div className="mb-8">
-        <h1 className="text-slate-800 text-2xl">
+        <h1 className="text-slate-800 text-2xl font-sans font-extrabold">
           Choose documents to start the AI chat
         </h1>
       </div>

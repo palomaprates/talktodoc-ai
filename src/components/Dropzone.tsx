@@ -124,7 +124,7 @@ export function Dropzone() {
             {files.map((file, index) => (
               <li key={`${file.name}-${index}`} className="p-4 flex items-center justify-between hover:bg-slate-800/20 transition-colors group">
                 <div className="flex items-center space-x-3 overflow-hidden">
-                  <div className="p-2 rounded-lg bg-gradient-to-br from-blue-700/20 to-purple-700/20 border border-blue-700/30 text-blue-400 shrink-0">
+                  <div className="p-2 rounded-lg bg-gradient-to-r from-blue-700/20 to-purple-700/20 border border-blue-700/30 text-blue-400 shrink-0">
                     <FaFile className='text-slate-300'/>
                   </div>
                   <div className="flex flex-col truncate">

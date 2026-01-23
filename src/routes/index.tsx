@@ -31,7 +31,7 @@ const handleLogout = async () => {
 }
 
   return (
-    <div className="p-8 text-center min-h-[60vh] flex flex-col items-center justify-center">
+    <div className="p-8 text-center w-full min-h-[calc(100vh-56px)] flex flex-col items-center justify-center">
       {user ? (
         <div className="space-y-6 max-w-2xl mx-auto">
           <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 mb-6">
