@@ -1,7 +1,7 @@
 import { supabase } from "@/lib/supabase";
 import type { UploadedTextFile } from "../dropzoneComponents/Dropzone";
 
-export async function handleUpload(
+export async function uploadDocuments(
     files: UploadedTextFile[],
     userId: string,
 ) {

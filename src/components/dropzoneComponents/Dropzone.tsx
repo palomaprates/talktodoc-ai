@@ -3,7 +3,7 @@ import { AuthContext } from '../../auth/AuthContext';
 import { FaFile } from 'react-icons/fa';
 import { TbTrash } from 'react-icons/tb';
 import { Button } from '../ui/button';
-import { handleUpload } from '../utils/upload';
+import { uploadDocuments } from '../utils/uploadDocuments';
 import { Card } from '../ui/card';
 import { processFile } from '../utils/processFile';
 
@@ -28,7 +28,7 @@ const formatFileSize = (bytes: number) => {
 
 export function Dropzone() {
   const { user } = useContext(AuthContext);
-const [files, setFiles] = useState<UploadedTextFile[]>([]);
+  const [files, setFiles] = useState<UploadedTextFile[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -76,6 +76,13 @@ const [files, setFiles] = useState<UploadedTextFile[]>([]);
     setFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
+  const handleUpload = async () => {
+  if (!user) return;
+
+  await uploadDocuments(files, user.id);
+
+  setFiles([]);
+};
   return (
     <div className="w-full max-w-4xl mx-auto flex flex-col justify-start items-center p-4">
       <Card className="w-full min-h-[400px] flex flex-col justify-center items-center rounded-2xl bg-white p-8">
@@ -180,11 +187,7 @@ transition
         </div>
         <div className="flex justify-center w-full pt-4">
           <Button 
-             onClick={() => {
-               if (user?.id) {
-                 handleUpload(files, user.id);
-               }
-             }} 
+             onClick={handleUpload} 
              className="bg-violet-500 hover:bg-violet-600 text-white rounded-full px-12 py-6 text-lg font-semibold shadow-lg transition-all hover:scale-105"
              disabled={!user}
           >    
