@@ -5,6 +5,7 @@ import { TbTrash } from 'react-icons/tb';
 import { Button } from '../ui/button';
 import { handleUpload } from '../utils/upload';
 import { Card } from '../ui/card';
+import { processFile } from '../utils/processFile';
 
 export type UploadedTextFile = {
   name: string;
@@ -17,24 +18,6 @@ export type UploadFileProps = {
   userId: string;
 }
 
-const readFileAsText = (file: File): Promise<UploadedTextFile> => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      resolve({
-        name: file.name,
-        size: file.size,
-        mimeType: file.type || 'text/plain',
-        content: reader.result as string,
-      });
-    };
-
-    reader.onerror = () => reject(reader.error);
-    reader.readAsText(file);
-  });
-};
-
 const formatFileSize = (bytes: number) => {
   if (bytes === 0) return '0 Bytes';
   const k = 1024;
@@ -45,9 +28,17 @@ const formatFileSize = (bytes: number) => {
 
 export function Dropzone() {
   const { user } = useContext(AuthContext);
-  const [files, setFiles] = useState<UploadedTextFile[]>([]);
+const [files, setFiles] = useState<UploadedTextFile[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFiles = async (fileList: FileList) => {
+  const processedFiles = await Promise.all(
+    Array.from(fileList).map(processFile)
+  );
+
+   setFiles(prev => [...prev, ...processedFiles]);
+  };
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -67,11 +58,7 @@ export function Dropzone() {
     setIsDragging(false);
 
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      const droppedFiles = Array.from(e.dataTransfer.files);
-      const parsedFiles = await Promise.all(
-        droppedFiles.map(readFileAsText)
-      );
-      setFiles((prev) => [...prev, ...parsedFiles]);
+      handleFiles(e.dataTransfer.files);
     }
   }, []);
 
@@ -81,11 +68,7 @@ export function Dropzone() {
 
   const handleFileInputChange =  async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-          const selectedFiles = Array.from(e.target.files);
-          const parsedFiles = await Promise.all(
-            selectedFiles.map(readFileAsText  )
-          );
-          setFiles((prev) => [...prev, ...parsedFiles]);
+          handleFiles(e.target.files);
     }
   };
 
