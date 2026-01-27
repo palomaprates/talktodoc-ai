@@ -1,6 +1,39 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useContext } from 'react';
+import { AuthContext } from '../../auth/AuthContext';
 import { FaFile } from 'react-icons/fa';
 import { TbTrash } from 'react-icons/tb';
+import { Button } from '../ui/button';
+import { handleUpload } from '../utils/upload';
+import { Card } from '../ui/card';
+
+export type UploadedTextFile = {
+  name: string;
+  size: number;
+  mimeType: string;
+  content: string;
+};
+export type UploadFileProps = {
+  files: UploadedTextFile[];
+  userId: string;
+}
+
+const readFileAsText = (file: File): Promise<UploadedTextFile> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      resolve({
+        name: file.name,
+        size: file.size,
+        mimeType: file.type || 'text/plain',
+        content: reader.result as string,
+      });
+    };
+
+    reader.onerror = () => reject(reader.error);
+    reader.readAsText(file);
+  });
+};
 
 const formatFileSize = (bytes: number) => {
   if (bytes === 0) return '0 Bytes';
@@ -11,7 +44,8 @@ const formatFileSize = (bytes: number) => {
 };
 
 export function Dropzone() {
-  const [files, setFiles] = useState<File[]>([]);
+  const { user } = useContext(AuthContext);
+  const [files, setFiles] = useState<UploadedTextFile[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -27,14 +61,17 @@ export function Dropzone() {
     setIsDragging(false);
   }, []);
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
+  const handleDrop = useCallback(async (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(false);
 
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      const newFiles = Array.from(e.dataTransfer.files);
-      setFiles((prev) => [...prev, ...newFiles]);
+      const droppedFiles = Array.from(e.dataTransfer.files);
+      const parsedFiles = await Promise.all(
+        droppedFiles.map(readFileAsText)
+      );
+      setFiles((prev) => [...prev, ...parsedFiles]);
     }
   }, []);
 
@@ -42,10 +79,13 @@ export function Dropzone() {
     fileInputRef.current?.click();
   };
 
-  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileInputChange =  async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      const newFiles = Array.from(e.target.files);
-      setFiles((prev) => [...prev, ...newFiles]);
+          const selectedFiles = Array.from(e.target.files);
+          const parsedFiles = await Promise.all(
+            selectedFiles.map(readFileAsText  )
+          );
+          setFiles((prev) => [...prev, ...parsedFiles]);
     }
   };
 
@@ -54,7 +94,9 @@ export function Dropzone() {
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto space-y-4">
+    <div className="w-full max-w-4xl mx-auto flex flex-col justify-start items-center p-4">
+      <Card className="w-full min-h-[400px] flex flex-col justify-center items-center rounded-2xl bg-white p-8">
+        <div className="w-full max-w-2xl mx-auto space-y-6">
       <div
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
@@ -63,7 +105,13 @@ export function Dropzone() {
         className={`
           relative group cursor-pointer
           flex flex-col items-center justify-center
-          p-10 border-2 border-dashed rounded-2xl
+          py-16 px-12
+          border-5 border-dashed
+          border-violet-300
+          hover:border-violet-400
+hover:bg-violet-50
+transition
+          rounded-4xl
           transition-all duration-300 ease-in-out
           ${isDragging 
             ? 'border-blue-500 bg-blue-50/10' 
@@ -90,12 +138,13 @@ export function Dropzone() {
         </div>
 
         <h3 className="text-xl font-semibold text-slate-800 mb-2">
-          {isDragging ? 'Drop files here' : 'Drop your files or click to upload'}
+          {isDragging ? 'Drop files here' : 'Drop your files or click to upload '}
         </h3>
       </div>
 
       {files.length > 0 && (
-        <div className="bg-slate-900/50 rounded-xl border border-slate-800 overflow-hidden backdrop-blur-sm transition-all duration-500 overflow-y-auto max-h-80">
+        <>
+          <div className="bg-slate-900/50 rounded-xl border border-slate-800 overflow-hidden backdrop-blur-sm transition-all duration-500 overflow-y-auto max-h-64 custom-scrollbar">
           <style>{`
             .custom-scrollbar::-webkit-scrollbar {
               width: 5px;
@@ -146,7 +195,23 @@ export function Dropzone() {
             ))}
           </ul>
         </div>
+        <div className="flex justify-center w-full pt-4">
+          <Button 
+             onClick={() => {
+               if (user?.id) {
+                 handleUpload(files, user.id);
+               }
+             }} 
+             className="bg-violet-500 hover:bg-violet-600 text-white rounded-full px-12 py-6 text-lg font-semibold shadow-lg transition-all hover:scale-105"
+             disabled={!user}
+          >    
+            Upload Files
+          </Button>
+        </div>
+      </>
       )}
+    </div>
+    </Card>
     </div>
   );
 }
