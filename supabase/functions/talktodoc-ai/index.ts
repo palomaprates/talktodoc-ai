@@ -25,10 +25,16 @@ Deno.serve(async (req) => {
 
     const { fileBase64, filename, mimeType } = await req.json();
     if (!fileBase64 || !mimeType) {
-      return new Response("Invalid payload", { status: 400 });
+      return new Response("Invalid payload", {
+        status: 400,
+        headers: corsHeaders,
+      });
     }
     if (mimeType !== "application/pdf") {
-      return new Response("Unsupported file type", { status: 415 });
+      return new Response("Unsupported file type", {
+        status: 415,
+        headers: corsHeaders,
+      });
     }
     const mockMarkdown = `
 # ${filename}
@@ -58,7 +64,7 @@ _End of mock document._
     return new Response(
       JSON.stringify({ content: mockMarkdown }),
       {
-        headers: { "Content-Type": "application/json" },
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
       },
     );
@@ -66,7 +72,10 @@ _End of mock document._
     console.error(err);
     return new Response(
       JSON.stringify({ error: "Mock conversion failed" }),
-      { status: 500 },
+      {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 500,
+      },
     );
   }
 });

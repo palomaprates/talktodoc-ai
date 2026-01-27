@@ -30,14 +30,22 @@ export function Dropzone() {
   const { user } = useContext(AuthContext);
   const [files, setFiles] = useState<UploadedTextFile[]>([]);
   const [isDragging, setIsDragging] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFiles = async (fileList: FileList) => {
-  const processedFiles = await Promise.all(
-    Array.from(fileList).map(processFile)
-  );
-
-   setFiles(prev => [...prev, ...processedFiles]);
+    setIsLoading(true);
+    try {
+      const processedFiles = await Promise.all(
+        Array.from(fileList).map(processFile)
+      );
+      setFiles(prev => [...prev, ...processedFiles]);
+    } catch (error) {
+      console.error("Error processing files:", error);
+      alert("Erro ao processar arquivos. Verifique o console para mais detalhes.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
@@ -85,7 +93,7 @@ export function Dropzone() {
 };
   return (
     <div className="w-full max-w-4xl mx-auto flex flex-col justify-start items-center p-4">
-      <Card className="w-full min-h-[400px] flex flex-col justify-center items-center rounded-2xl bg-white p-8">
+      <Card className={`w-full min-h-[400px] flex flex-col justify-start items-center rounded-2xl bg-white p-8 transition-all duration-500`}>
         <div className="w-full max-w-2xl mx-auto space-y-6">
       <div
         onDragOver={handleDragOver}
@@ -95,14 +103,15 @@ export function Dropzone() {
         className={`
           relative group cursor-pointer
           flex flex-col items-center justify-center
-          py-16 px-12
+          ${files.length > 0 ? 'py-8' : 'py-16'} px-12
           border-5 border-dashed
           border-violet-300
           hover:border-violet-400
-hover:bg-violet-50
-transition
+          hover:bg-violet-50
+          transition
           rounded-4xl
           transition-all duration-300 ease-in-out
+          ${isLoading ? 'opacity-50 pointer-events-none' : ''}
           ${isDragging 
             ? 'border-blue-500 bg-blue-50/10' 
             : 'border-slate-700 hover:border-purple-500 hover:bg-purple-50/5'
@@ -187,11 +196,17 @@ transition
         </div>
         <div className="flex justify-center w-full pt-4">
           <Button 
-             onClick={handleUpload} 
-             className="bg-violet-500 hover:bg-violet-600 text-white rounded-full px-12 py-6 text-lg font-semibold shadow-lg transition-all hover:scale-105"
-             disabled={!user}
+             onClick={
+              () => {
+                if (user?.id) {
+                  handleUpload();
+                }
+              }
+             } 
+             className="bg-violet-500 hover:bg-violet-600 text-white rounded-full px-12 py-6 text-lg font-semibold shadow-lg transition-all hover:scale-105 disabled:opacity-50 disabled:hover:scale-100"
+             disabled={!user || isLoading}
           >    
-            Upload Files
+            {isLoading ? 'Wait...' : 'Upload Files'}
           </Button>
         </div>
       </>

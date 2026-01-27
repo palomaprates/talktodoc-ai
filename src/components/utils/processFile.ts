@@ -1,4 +1,5 @@
 import type { UploadedTextFile } from "../dropzoneComponents/Dropzone";
+import { supabase } from "@/lib/supabase";
 
 function fileToBase64(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -15,6 +16,7 @@ function fileToBase64(file: File): Promise<string> {
         reader.readAsDataURL(file);
     });
 }
+
 function processTextFile(file: File): Promise<UploadedTextFile> {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -31,28 +33,28 @@ function processTextFile(file: File): Promise<UploadedTextFile> {
         reader.readAsText(file);
     });
 }
+
 async function processPdfFile(file: File): Promise<UploadedTextFile> {
     const base64 = await fileToBase64(file);
-    const res = await fetch("/functions/v1/talktodoc-ai", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+
+    const { data, error } = await supabase.functions.invoke("talktodoc-ai", {
+        body: {
             fileBase64: base64,
             filename: file.name,
             mimeType: file.type,
-        }),
+        },
     });
 
-    if (!res.ok) {
-        throw new Error("Failed to convert PDF");
+    if (error) {
+        console.error("Supabase function error:", error);
+        throw new Error(`Failed to convert PDF: ${error.message}`);
     }
 
-    const data = await res.json();
     return {
         name: file.name,
         size: file.size,
         mimeType: file.type,
-        content: data.content, // mock
+        content: data.content,
     };
 }
 
