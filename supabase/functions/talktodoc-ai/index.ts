@@ -23,30 +23,50 @@ Deno.serve(async (req) => {
       },
     );
 
-    const { data: { user }, error } = await supabaseClient.auth.getUser();
-
-    if (error || !user) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 401,
-      });
+    const { fileBase64, filename, mimeType } = await req.json();
+    if (!fileBase64 || !mimeType) {
+      return new Response("Invalid payload", { status: 400 });
     }
+    if (mimeType !== "application/pdf") {
+      return new Response("Unsupported file type", { status: 415 });
+    }
+    const mockMarkdown = `
+# ${filename}
+ 
+## Extracted Content (Mock)
 
-    const body = await req.json().catch(() => ({}));
-    const name = body.name || "User";
+This is a **mocked Markdown output** simulating a PDF conversion.
 
-    const data = {
-      message: `Hello ${name}! I see your email is ${user.email}.`,
-    };
+- File name: \`${filename}\`
+- MIME type: \`${mimeType}\`
+- Conversion: **PDF → Markdown**
 
-    return new Response(JSON.stringify(data), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 200,
-    });
-  } catch (err: any) {
-    return new Response(JSON.stringify({ error: err.message }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 400,
-    });
+### Sample Section
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+
+\`\`\`
+function example() {
+  return "mock content";
+}
+\`\`\`
+
+---
+
+_End of mock document._
+`;
+    return new Response(
+      JSON.stringify({ content: mockMarkdown }),
+      {
+        headers: { "Content-Type": "application/json" },
+        status: 200,
+      },
+    );
+  } catch (err) {
+    console.error(err);
+    return new Response(
+      JSON.stringify({ error: "Mock conversion failed" }),
+      { status: 500 },
+    );
   }
 });
