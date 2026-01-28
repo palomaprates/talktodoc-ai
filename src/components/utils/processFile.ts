@@ -65,7 +65,5 @@ export async function processFile(file: File): Promise<UploadedTextFile> {
     if (file.type === "application/pdf") {
         return processPdfFile(file);
     }
-    console.log("Processing:", file.name, file.type);
-
     throw new Error(`Unsupported file type: ${file.type}`);
 }
