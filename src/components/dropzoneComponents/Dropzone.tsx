@@ -6,17 +6,8 @@ import { Button } from '../ui/button';
 import { uploadDocuments } from '../utils/uploadDocuments';
 import { Card } from '../ui/card';
 import { processFile } from '../utils/processFile';
+import type { UploadedTextFile } from '@/types';
 
-export type UploadedTextFile = {
-  name: string;
-  size: number;
-  mimeType: string;
-  content: string;
-};
-export type UploadFileProps = {
-  files: UploadedTextFile[];
-  userId: string;
-}
 
 const formatFileSize = (bytes: number) => {
   if (bytes === 0) return '0 Bytes';
