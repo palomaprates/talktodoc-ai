@@ -5,7 +5,7 @@ export type UploadedTextFile = {
     content: string;
 };
 
-export type Document = {
+export type KnowledgeDocument = {
     id: string;
     title: string;
     content: string;

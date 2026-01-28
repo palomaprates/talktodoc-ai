@@ -1,11 +1,20 @@
 import { NavUser } from "./NavUser";
 import { ChatHistoryContent } from "./ChatHistoryContent";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarHeader } from "../ui/sidebar";
+import { useKnowledgeDocuments } from "@/hooks/useKnowledgeDocuments";
+import { useContext } from "react";
+import { AuthContext } from "@/auth/AuthContext";
 
 interface AppSidebarProps
   extends React.ComponentPropsWithoutRef<typeof Sidebar> {} 
 
 export function AppSidebar({ ...props }: AppSidebarProps) {
+    const { user, isLoading: authLoading } = useContext(AuthContext);
+    const { documents, isLoading } = useKnowledgeDocuments(user?.id);
+    if (authLoading || isLoading) {
+    return <p className="text-slate-500">Loading...</p>;
+  }
+
     return (
     <Sidebar {...props}>
       <SidebarContent className="flex flex-col">
@@ -15,7 +24,7 @@ export function AppSidebar({ ...props }: AppSidebarProps) {
           </h1>
         </SidebarHeader>
         <SidebarGroup className="flex-1 overflow-y-auto">
-          <ChatHistoryContent/>
+          <ChatHistoryContent documents={documents}/>
         </SidebarGroup>
         </SidebarContent> 
         <SidebarFooter className="flex h-16 items-end justify-center bg-sidebar text-sidebar-foreground">

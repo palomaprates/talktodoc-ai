@@ -14,8 +14,9 @@ import {
 } from "../ui/dropdown-menu";
 import { MoreHorizontal, Trash2 } from "lucide-react";
 import { TbPencil } from "react-icons/tb";
+import type { KnowledgeDocument } from "@/types";
 
-export default function ChatHistoryItem() {
+export default function ChatHistoryItem({ document }: { document: KnowledgeDocument}) {
   const spanRef = useRef<HTMLSpanElement>(null);
   const { isMobile } = useSidebar();
   const [isEditing, setIsEditing] = useState(false);
@@ -32,122 +33,16 @@ export default function ChatHistoryItem() {
           className={`text-sm font-sans ${isEditing ? "border border-purple-400 rounded px-1" : ""}`}
           tabIndex={isEditing ? 0 : -1}
         >
-          Chat about the document
         </span>
+        <span>{document.title}</span>
+         <p className="text-xs text-slate-500 mt-1">
+        {document.source_type} •{" "}
+        {new Date(document.created_at).toLocaleDateString()}
+      </p>
+        <p className="text-sm text-slate-600 mt-3 line-clamp-3">
+        {document.content.slice(0, 150)}
+      </p>
      </SidebarMenuButton> 
-            <SidebarMenuButton
-        className="flex items-center space-x-1 w-full h-12 hover:bg-sidebar-foreground/20 transition cursor-pointer"
-      >
-        <span
-          contentEditable={isEditing}
-          suppressContentEditableWarning
-          ref={spanRef}
-          onMouseDown={(e) => e.stopPropagation()}
-          className={`text-sm ${isEditing ? "border border-purple-400 rounded px-1" : ""}`}
-          tabIndex={isEditing ? 0 : -1}
-        >
-          Chat about the document
-        </span>
-      </SidebarMenuButton>
-            <SidebarMenuButton
-        className="flex items-center space-x-1 w-full h-12 hover:bg-sidebar-foreground/20 transition cursor-pointer"
-      >
-        <span
-          contentEditable={isEditing}
-          suppressContentEditableWarning
-          ref={spanRef}
-          onMouseDown={(e) => e.stopPropagation()}
-          className={`text-sm ${isEditing ? "border border-purple-400 rounded px-1" : ""}`}
-          tabIndex={isEditing ? 0 : -1}
-        >
-          Chat about the document
-        </span>
-      </SidebarMenuButton>
-            <SidebarMenuButton
-        className="flex items-center space-x-1 w-full h-12 hover:bg-sidebar-foreground/20 transition cursor-pointer"
-        >
-        <span
-          contentEditable={isEditing}
-          suppressContentEditableWarning
-          ref={spanRef}
-          onMouseDown={(e) => e.stopPropagation()}
-          className={`text-sm ${isEditing ? "border border-purple-400 rounded px-1" : ""}`}
-          tabIndex={isEditing ? 0 : -1}
-        >
-          Chat about the document
-        </span>
-      </SidebarMenuButton>
-            <SidebarMenuButton
-        className="flex items-center space-x-1 w-full h-12 hover:bg-sidebar-foreground/20 transition cursor-pointer"
-        >
-        <span
-          contentEditable={isEditing}
-          suppressContentEditableWarning
-          ref={spanRef}
-          onMouseDown={(e) => e.stopPropagation()}
-          className={`text-sm ${isEditing ? "border border-purple-400 rounded px-1" : ""}`}
-          tabIndex={isEditing ? 0 : -1}
-        >
-          Chat about the document
-        </span>
-      </SidebarMenuButton>
-            <SidebarMenuButton
-        className="flex items-center space-x-1 w-full h-12 hover:bg-sidebar-foreground/20 transition cursor-pointer"
-      >
-        <span
-          contentEditable={isEditing}
-          suppressContentEditableWarning
-          ref={spanRef}
-          onMouseDown={(e) => e.stopPropagation()}
-          className={`text-sm ${isEditing ? "border border-purple-400 rounded px-1" : ""}`}
-          tabIndex={isEditing ? 0 : -1}
-        >
-          Chat about the document
-        </span>
-      </SidebarMenuButton>
-            <SidebarMenuButton
-        className="flex items-center space-x-1 w-full h-12 hover:bg-sidebar-foreground/20 transition cursor-pointer"
-      >
-        <span
-          contentEditable={isEditing}
-          suppressContentEditableWarning
-          ref={spanRef}
-          onMouseDown={(e) => e.stopPropagation()}
-          className={`text-sm ${isEditing ? "border border-purple-400 rounded px-1" : ""}`}
-          tabIndex={isEditing ? 0 : -1}
-        >
-          Chat about the document
-        </span>
-      </SidebarMenuButton>
-            <SidebarMenuButton
-        className="flex items-center space-x-1 w-full h-12 hover:bg-sidebar-foreground/20 transition cursor-pointer"
-      >
-        <span
-          contentEditable={isEditing}
-          suppressContentEditableWarning
-          ref={spanRef}
-          onMouseDown={(e) => e.stopPropagation()}
-          className={`text-sm ${isEditing ? "border border-purple-400 rounded px-1" : ""}`}
-          tabIndex={isEditing ? 0 : -1}
-        >
-          Chat about the document
-        </span>
-      </SidebarMenuButton>
-            <SidebarMenuButton
-        className="flex items-center space-x-1 w-full h-12 hover:bg-sidebar-foreground/20 transition cursor-pointer"
-        >
-        <span
-          contentEditable={isEditing}
-          suppressContentEditableWarning
-          ref={spanRef}
-          onMouseDown={(e) => e.stopPropagation()}
-          className={`text-sm ${isEditing ? "border border-purple-400 rounded px-1" : ""}`}
-          tabIndex={isEditing ? 0 : -1}
-        >
-          Chat about the document
-        </span>
-      </SidebarMenuButton>
-
       <DropdownMenu>
         <DropdownMenuTrigger asChild className="text-gray-600 cursor-pointer">
           <SidebarMenuAction showOnHover>
@@ -167,10 +62,7 @@ export default function ChatHistoryItem() {
                 if (!spanRef.current) return;
                 spanRef.current.focus();
                 const selection = window.getSelection();
-                const range = document.createRange();
-                range.selectNodeContents(spanRef.current);
                 selection?.removeAllRanges();
-                selection?.addRange(range);
               }, 300);
             }}
           >
