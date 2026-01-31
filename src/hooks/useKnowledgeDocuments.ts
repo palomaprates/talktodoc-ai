@@ -6,20 +6,19 @@ export function useKnowledgeDocuments(userId: string | undefined) {
     const [documents, setDocuments] = useState<KnowledgeDocument[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
+    async function fetchDocuments() {
         if (!userId) return;
-
-        async function fetchDocuments() {
-            const { data, error } = await supabase.from("documents").select("*")
-                .eq("user_id", userId).order("created_at", {
-                    ascending: false,
-                });
-            if (!error && data) {
-                setDocuments(data);
-            }
-            setIsLoading(false);
+        const { data, error } = await supabase.from("documents").select("*")
+            .eq("user_id", userId).order("created_at", {
+                ascending: false,
+            });
+        if (!error && data) {
+            setDocuments(data);
         }
+        setIsLoading(false);
+    }
+    useEffect(() => {
         fetchDocuments();
     }, [userId]);
-    return { documents, isLoading };
+    return { documents, isLoading, refetch: fetchDocuments };
 }

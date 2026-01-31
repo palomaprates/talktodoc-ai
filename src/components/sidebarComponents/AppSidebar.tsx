@@ -1,20 +1,12 @@
 import { NavUser } from "./NavUser";
 import { ChatHistoryContent } from "./ChatHistoryContent";
-import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarHeader } from "../ui/sidebar";
-import { useKnowledgeDocuments } from "@/hooks/useKnowledgeDocuments";
-import { useContext } from "react";
-import { AuthContext } from "@/auth/AuthContext";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader } from "../ui/sidebar";
+import type { KnowledgeDocument } from "@/types";
 
 interface AppSidebarProps
   extends React.ComponentPropsWithoutRef<typeof Sidebar> {} 
 
-export function AppSidebar({ ...props }: AppSidebarProps) {
-    const { user, isLoading: authLoading } = useContext(AuthContext);
-    const { documents, isLoading } = useKnowledgeDocuments(user?.id);
-    if (authLoading || isLoading) {
-    return <p className="text-slate-500">Loading...</p>;
-  }
-
+export function AppSidebar({ documents, ...props }: AppSidebarProps & { documents: KnowledgeDocument[] }) {
     return (
     <Sidebar {...props}>
       <SidebarContent className="flex flex-col">
@@ -23,9 +15,7 @@ export function AppSidebar({ ...props }: AppSidebarProps) {
             TalkToDoc AI
           </h1>
         </SidebarHeader>
-        <SidebarGroup className="flex-1 overflow-y-auto">
-          <ChatHistoryContent documents={documents}/>
-        </SidebarGroup>
+        <ChatHistoryContent documents={documents}/>
         </SidebarContent> 
         <SidebarFooter className="flex h-16 items-end justify-center bg-sidebar text-sidebar-foreground">
           <NavUser />

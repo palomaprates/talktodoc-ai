@@ -1,9 +1,7 @@
 import { useRef, useState } from "react";
 import {
-  SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
-  useSidebar,
 } from "../ui/sidebar";
 import {
   DropdownMenu,
@@ -16,68 +14,96 @@ import { MoreHorizontal, Trash2 } from "lucide-react";
 import { TbPencil } from "react-icons/tb";
 import type { KnowledgeDocument } from "@/types";
 
-export default function ChatHistoryItem({ document }: { document: KnowledgeDocument}) {
+export default function ChatHistoryItem({
+  document,
+}: {
+  document: KnowledgeDocument;
+}) {
   const spanRef = useRef<HTMLSpanElement>(null);
-  const { isMobile } = useSidebar();
   const [isEditing, setIsEditing] = useState(false);
+
   return (
-    <SidebarMenuItem className="mt-6 min-h-full">
-      <SidebarMenuButton
-        className="flex items-center space-x-1 w-full h-12 hover:bg-sidebar-foreground/20 transition cursor-pointer"
-      >
-        <span
-          contentEditable={isEditing}
-          suppressContentEditableWarning
-          ref={spanRef}
-          onMouseDown={(e) => e.stopPropagation()}
-          className={`text-sm font-sans ${isEditing ? "border border-purple-400 rounded px-1" : ""}`}
-          tabIndex={isEditing ? 0 : -1}
-        >
-        </span>
-        <span>{document.title}</span>
-         <p className="text-xs text-slate-500 mt-1">
-        {document.source_type} •{" "}
-        {new Date(document.created_at).toLocaleDateString()}
-      </p>
-        <p className="text-sm text-slate-600 mt-3 line-clamp-3">
-        {document.content.slice(0, 150)}
-      </p>
-     </SidebarMenuButton> 
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild className="text-gray-600 cursor-pointer">
-          <SidebarMenuAction showOnHover>
-            <MoreHorizontal />
-          </SidebarMenuAction>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent
-          className="w-48"
-          side={isMobile ? "right" : "right"}
-          align={isMobile ? "end" : "start"}
-        >
-          <DropdownMenuItem
-            className="cursor-pointer"
-            onClick={() => {
-              setIsEditing(true);
-              setTimeout(() => {
-                if (!spanRef.current) return;
-                spanRef.current.focus();
-                const selection = window.getSelection();
-                selection?.removeAllRanges();
-              }, 300);
-            }}
-          >
-            <TbPencil className="text-muted-foreground" />{" "}
-            <span className="text-muted-foreground text-xs">Renomear</span>
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            className="cursor-pointer"
-          >
-            <Trash2 className=" text-red-600" />
-            <span className="text-red-600 text-xs">Excluir</span>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+    <SidebarMenuItem>
+      <div className="relative group w-full px-1">
+        <SidebarMenuButton asChild className="w-full h-auto p-0 hover:bg-transparent">
+          <div className="w-full rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition-all duration-200 hover:border-violet-300 hover:shadow-md flex flex-col gap-2">
+            <div className="flex justify-between items-start gap-2">
+              <div className="flex-1 min-w-0">
+                <span
+                  ref={spanRef}
+                  contentEditable={isEditing}
+                  suppressContentEditableWarning
+                  onMouseDown={(e) => e.stopPropagation()}
+                  tabIndex={isEditing ? 0 : -1}
+                  className={`block text-sm font-semibold text-slate-800 break-words ${
+                    isEditing
+                      ? "border-2 border-violet-400 bg-violet-50 rounded px-1 outline-none"
+                      : ""
+                  }`}
+                >
+                  {document.title}
+                </span>
+
+                <div className="flex items-center gap-1.5 mt-1">
+                  <span className="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 border border-slate-200">
+                    {document.source_type}
+                  </span>
+                  <span className="text-[10px] text-slate-400 font-medium">
+                    • {new Date(document.created_at).toLocaleDateString()}
+                  </span>
+                </div>
+              </div>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="p-1 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-100 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <MoreHorizontal className="size-4" />
+                  </button>
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent
+                  className="w-40"
+                  side="right"
+                  align="start"
+                  sideOffset={8}
+                >
+                  <DropdownMenuItem
+                    className="flex items-center gap-2 cursor-pointer focus:bg-violet-50 focus:text-violet-600"
+                    onClick={() => {
+                      setIsEditing(true);
+                      setTimeout(() => {
+                        spanRef.current?.focus();
+                        const range = window.document.createRange();
+                        const selection = window.getSelection();
+                        if (spanRef.current && selection) {
+                          range.selectNodeContents(spanRef.current);
+                          range.collapse(false);
+                          selection.removeAllRanges();
+                          selection.addRange(range);
+                        }
+                      }, 50);
+                    }}
+                  >
+                    <TbPencil className="size-3.5" />
+                    <span className="text-xs font-medium">Renomear</span>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuSeparator />
+
+                  <DropdownMenuItem className="flex items-center gap-2 cursor-pointer text-red-500 focus:bg-red-50 focus:text-red-600">
+                    <Trash2 className="size-3.5" />
+                    <span className="text-xs font-medium">Excluir</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+
+            <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">
+              {document.content}
+            </p>
+          </div>
+        </SidebarMenuButton>
+      </div>
     </SidebarMenuItem>
   );
 }

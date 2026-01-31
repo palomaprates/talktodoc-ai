@@ -5,7 +5,7 @@ export async function uploadDocuments(
     files: UploadedTextFile[],
     userId: string,
 ) {
-    if (!files.length) return;
+    if (!files.length) return [];
 
     const documents = files.map((file) => ({
         user_id: userId,

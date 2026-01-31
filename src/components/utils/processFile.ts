@@ -57,7 +57,6 @@ async function processPdfFile(file: File): Promise<UploadedTextFile> {
         content: data.content,
     };
 }
-
 export async function processFile(file: File): Promise<UploadedTextFile> {
     if (file.type === "text/plain" || file.type === "text/markdown") {
         return processTextFile(file);

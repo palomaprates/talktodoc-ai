@@ -17,7 +17,7 @@ const formatFileSize = (bytes: number) => {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 };
 
-export function Dropzone() {
+export function Dropzone( {onUploadSuccess}: {onUploadSuccess: () => Promise<void>}) {
   const { user } = useContext(AuthContext);
   const [files, setFiles] = useState<UploadedTextFile[]>([]);
   const [isDragging, setIsDragging] = useState(false);
@@ -79,7 +79,7 @@ export function Dropzone() {
   if (!user) return;
 
   await uploadDocuments(files, user.id);
-
+  await onUploadSuccess();
   setFiles([]);
 };
   return (
