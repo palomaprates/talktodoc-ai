@@ -16,8 +16,10 @@ import type { KnowledgeDocument } from "@/types";
 
 export default function ChatHistoryItem({
   document,
+  onDelete,
 }: {
   document: KnowledgeDocument;
+  onDelete: (documentId: string) => void;
 }) {
   const spanRef = useRef<HTMLSpanElement>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -90,7 +92,7 @@ export default function ChatHistoryItem({
 
                   <DropdownMenuSeparator />
 
-                  <DropdownMenuItem className="flex items-center gap-2 cursor-pointer text-red-500 focus:bg-red-50 focus:text-red-600">
+                  <DropdownMenuItem onClick={(e) => {e.stopPropagation(); onDelete(document.id)}} className="flex items-center gap-2 cursor-pointer text-red-500 focus:bg-red-50 focus:text-red-600">
                     <Trash2 className="size-3.5" />
                     <span className="text-xs font-medium">Excluir</span>
                   </DropdownMenuItem>

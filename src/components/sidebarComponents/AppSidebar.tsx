@@ -6,7 +6,7 @@ import type { KnowledgeDocument } from "@/types";
 interface AppSidebarProps
   extends React.ComponentPropsWithoutRef<typeof Sidebar> {} 
 
-export function AppSidebar({ documents, ...props }: AppSidebarProps & { documents: KnowledgeDocument[] }) {
+export function AppSidebar({ documents, onDelete, ...props }: AppSidebarProps & { documents: KnowledgeDocument[]; onDelete: (documentId: string) => void }) {
     return (
     <Sidebar {...props}>
       <SidebarContent className="flex flex-col">
@@ -15,7 +15,7 @@ export function AppSidebar({ documents, ...props }: AppSidebarProps & { document
             TalkToDoc AI
           </h1>
         </SidebarHeader>
-        <ChatHistoryContent documents={documents}/>
+        <ChatHistoryContent documents={documents} onDelete={onDelete}/>
         </SidebarContent> 
         <SidebarFooter className="flex h-16 items-end justify-center bg-sidebar text-sidebar-foreground">
           <NavUser />

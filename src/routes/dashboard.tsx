@@ -5,6 +5,7 @@ import { Dropzone } from '@/components/dropzoneComponents/Dropzone'
 import { useKnowledgeDocuments } from '@/hooks/useKnowledgeDocuments'
 import { useContext } from 'react'
 import { AuthContext } from '@/auth/AuthContext'
+import { deleteDocument } from '@/components/utils/deleteDocument'
 
 export const Route = createFileRoute('/dashboard')({
   beforeLoad: ({ context }) => {
@@ -26,12 +27,20 @@ function Dashboard() {
     isLoading,
     refetch,
   } = useKnowledgeDocuments(user?.id);
+    const handleDelete = async (documentId: string) => {
+    try {
+      await deleteDocument(documentId);
+      await refetch();
+    } catch (err) {
+      console.error(err);
+    }
+  };
     if (isLoading) return <p>Loading...</p>;
   return (
 <SidebarProvider>
 <div className="min-w-screen px-4 md:px-8 flex gap-8 bg-violet-50 min-h-screen">
   <div className="w-64 flex flex-col">
-    <AppSidebar documents={documents}/>
+    <AppSidebar documents={documents} onDelete={handleDelete}/>
   </div>
   <div className="flex-1 flex justify-around flex-col items-center">
     <Dropzone onUploadSuccess={refetch}/>
