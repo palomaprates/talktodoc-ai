@@ -1,5 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import type { UploadedTextFile } from "@/types";
+import { normalizeText } from "./normalizeText";
 
 function fileToBase64(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -26,7 +27,7 @@ function processTextFile(file: File): Promise<UploadedTextFile> {
                 name: file.name,
                 size: file.size,
                 mimeType: file.type,
-                content: reader.result as string,
+                content: normalizeText(reader.result as string),
             });
         };
         reader.onerror = () => reject(reader.error);
@@ -54,7 +55,7 @@ async function processPdfFile(file: File): Promise<UploadedTextFile> {
         name: file.name,
         size: file.size,
         mimeType: file.type,
-        content: data.content,
+        content: normalizeText(data.content),
     };
 }
 export async function processFile(file: File): Promise<UploadedTextFile> {
