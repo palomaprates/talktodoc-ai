@@ -35,15 +35,25 @@ Deno.serve(async (req) => {
       }
 
       const mockSummary = `
-## Resumo do Documento
-Este documento trata de **${
-        content.substring(0, 50)
-      }...** e contém informações importantes sobre o tema abordado.
+# Resumo Executivo
 
-### Pontos Chave
-- Ponto 1: Detalhe importante extraído.
-- Ponto 2: Outra observação relevante.
-- Ponto 3: Conclusão do documento.
+Este documento apresenta uma análise detalhada baseada no conteúdo extraído. Abaixo, destacamos os pontos principais para uma compreensão rápida e clara.
+
+---
+
+## 📝 Visão Geral
+O texto aborda fundamentalmente: **"${content.substring(0, 100).trim()}..."**
+
+## 🚀 Pontos Chave
+- **Contexto Principal**: Identificação dos temas predominantes e objetivos do documento.
+- **Destaque 1**: Observação relevante extraída das seções iniciais.
+- **Destaque 2**: Análise técnica ou conceitual identificada no corpo do texto.
+
+## 💡 Conclusões & Próximos Passos
+> O conteúdo sugere uma progressão lógica voltada para a resolução de problemas específicos ou apresentação de novos conceitos.
+
+---
+_Gerado automaticamente pelo TalkToDoc AI_
 `;
 
       return new Response(
