@@ -11,7 +11,8 @@ export async function uploadDocuments(
         user_id: userId,
         title: file.name,
         content: file.content,
-        source_type: file.mimeType.split(".").pop() ?? "txt",
+        summary: file.summary ?? null,
+        source_type: file.mimeType.split("/").pop() ?? "txt",
         original_filename: file.name,
     }));
 

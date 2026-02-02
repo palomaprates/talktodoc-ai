@@ -1,6 +1,7 @@
 import { supabase } from "@/lib/supabase";
 import type { UploadedTextFile } from "@/types";
 import { normalizeText } from "./normalizeText";
+import { summarizeText } from "./summarizeText";
 
 function fileToBase64(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -18,21 +19,24 @@ function fileToBase64(file: File): Promise<string> {
     });
 }
 
-function processTextFile(file: File): Promise<UploadedTextFile> {
-    return new Promise((resolve, reject) => {
+async function processTextFile(file: File): Promise<UploadedTextFile> {
+    const text = await new Promise<string>((resolve, reject) => {
         const reader = new FileReader();
-
-        reader.onload = () => {
-            resolve({
-                name: file.name,
-                size: file.size,
-                mimeType: file.type,
-                content: normalizeText(reader.result as string),
-            });
-        };
+        reader.onload = () => resolve(reader.result as string);
         reader.onerror = () => reject(reader.error);
         reader.readAsText(file);
     });
+
+    const normalizedContent = normalizeText(text);
+    const summary = await summarizeText(normalizedContent);
+
+    return {
+        name: file.name,
+        size: file.size,
+        mimeType: file.type,
+        content: normalizedContent,
+        summary,
+    };
 }
 
 async function processPdfFile(file: File): Promise<UploadedTextFile> {
@@ -51,11 +55,15 @@ async function processPdfFile(file: File): Promise<UploadedTextFile> {
         throw new Error(`Failed to convert PDF: ${error.message}`);
     }
 
+    const normalizedContent = normalizeText(data.content);
+    const summary = await summarizeText(normalizedContent);
+
     return {
         name: file.name,
         size: file.size,
         mimeType: file.type,
-        content: normalizeText(data.content),
+        content: normalizedContent,
+        summary,
     };
 }
 export async function processFile(file: File): Promise<UploadedTextFile> {

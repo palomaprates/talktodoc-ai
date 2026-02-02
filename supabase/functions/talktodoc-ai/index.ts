@@ -23,7 +23,38 @@ Deno.serve(async (req) => {
       },
     );
 
-    const { fileBase64, filename, mimeType } = await req.json();
+    const { fileBase64, filename, mimeType, action, content } = await req
+      .json();
+
+    if (action === "summarize") {
+      if (!content) {
+        return new Response("Content required for summarization", {
+          status: 400,
+          headers: corsHeaders,
+        });
+      }
+
+      const mockSummary = `
+## Resumo do Documento
+Este documento trata de **${
+        content.substring(0, 50)
+      }...** e contém informações importantes sobre o tema abordado.
+
+### Pontos Chave
+- Ponto 1: Detalhe importante extraído.
+- Ponto 2: Outra observação relevante.
+- Ponto 3: Conclusão do documento.
+`;
+
+      return new Response(
+        JSON.stringify({ summary: mockSummary }),
+        {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 200,
+        },
+      );
+    }
+
     if (!fileBase64 || !mimeType) {
       return new Response("Invalid payload", {
         status: 400,

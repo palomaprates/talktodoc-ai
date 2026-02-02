@@ -5,12 +5,14 @@ export type UploadedTextFile = {
     size: number;
     mimeType: string;
     content: string;
+    summary?: string;
 };
 
 export type KnowledgeDocument = {
     id: string;
     title: string;
     content: string;
+    summary: string | null;
     source_type: string;
     original_filename: string | null;
     created_at: string;
