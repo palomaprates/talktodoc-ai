@@ -23,7 +23,6 @@ function LoginComponent() {
 
   return (
     <div className="max-w-md mx-auto mt-12 p-8 bg-white rounded-xl shadow-lg border border-slate-100">
-      <h1 className="text-3xl font-bold text-center mb-8 text-slate-800">Welcome Back</h1>
       <Auth
         supabaseClient={supabase}
         appearance={{ 

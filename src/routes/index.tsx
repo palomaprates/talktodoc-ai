@@ -34,12 +34,9 @@ const handleLogout = async () => {
     <div className="p-8 text-center w-full min-h-[calc(100vh-56px)] flex flex-col items-center justify-center">
       {user ? (
         <div className="space-y-6 max-w-2xl mx-auto">
-          <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 mb-6">
-            Welcome, {user.email}!
-          </h1>
           <div className="pt-12 flex flex-col items-center space-y-4">
             <Link to="/dashboard" className="text-blue-500 hover:underline text-lg">
-              Go to Dashboard
+              Dashboard
             </Link>
             <button 
               onClick={handleLogout}
@@ -54,9 +51,6 @@ const handleLogout = async () => {
           <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 mb-6 transition-all hover:scale-105">
             TalkToDoc AI
           </h1>
-          <p className="text-xl text-slate-800 max-w-lg leading-relaxed mx-auto">
-            Experience the future of document interaction.
-          </p>
           <div className="pt-8">
             <Link 
               to="/login" 

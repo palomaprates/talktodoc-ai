@@ -3,7 +3,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { ChevronsUpDown, LogOut } from "lucide-react";
 import { useContext } from "react";
-import { AuthContext } from "../../auth/AuthContext";
+import { AuthContext } from "@/auth/AuthContext";
 import { supabase } from "@/lib/supabase";
 
 export function NavUser() {
