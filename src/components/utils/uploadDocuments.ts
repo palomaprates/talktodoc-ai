@@ -9,7 +9,10 @@ export async function uploadDocuments(
     for (const file of files) {
         const { data: chat, error: chatError } = await supabase
             .from("chats")
-            .insert({ user_id: userId })
+            .insert({
+                user_id: userId,
+                title: file.name,
+            })
             .select()
             .single();
 
