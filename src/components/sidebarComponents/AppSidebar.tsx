@@ -1,12 +1,12 @@
 import { NavUser } from "./NavUser";
 import { ChatHistoryContent } from "./ChatHistoryContent";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader } from "../ui/sidebar";
-import type { KnowledgeDocument } from "@/types";
+import type { FileWithSummary } from "@/hooks/useKnowledgeDocuments";
 
 interface AppSidebarProps
   extends React.ComponentPropsWithoutRef<typeof Sidebar> {} 
 
-export function AppSidebar({ documents, onDelete, ...props }: AppSidebarProps & { documents: KnowledgeDocument[]; onDelete: (documentId: string) => void }) {
+export function AppSidebar({ documents, onDelete, ...props }: AppSidebarProps & { documents: FileWithSummary[]; onDelete: (documentId: string) => void }) {
     return (
     <Sidebar {...props}>
       <SidebarContent className="flex flex-col">

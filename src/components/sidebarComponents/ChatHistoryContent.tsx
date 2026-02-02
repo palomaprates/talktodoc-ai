@@ -4,10 +4,15 @@ import {
   SidebarMenu,
 } from "@/components/ui/sidebar";
 import ChatHistoryItem from "./ChatHistoryItem";
-import type { KnowledgeDocument } from "@/types";
+import type { FileWithSummary } from "@/hooks/useKnowledgeDocuments";
 
-
-export function ChatHistoryContent({ documents, onDelete }: { documents: KnowledgeDocument[]; onDelete: (documentId: string) => void }) {
+export function ChatHistoryContent({ 
+  documents, 
+  onDelete 
+}: { 
+  documents: FileWithSummary[]; 
+  onDelete: (documentId: string) => void 
+}) {
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden min-h-full p-4">
       <SidebarGroupLabel className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-2">

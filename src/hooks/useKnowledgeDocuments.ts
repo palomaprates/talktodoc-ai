@@ -1,24 +1,42 @@
 import { supabase } from "@/lib/supabase";
-import type { KnowledgeDocument } from "@/types";
+import type { FileEntity, Summary } from "@/types";
 import { useEffect, useState } from "react";
 
+export type FileWithSummary = FileEntity & {
+    summaries: Summary[];
+};
+
 export function useKnowledgeDocuments(userId: string | undefined) {
-    const [documents, setDocuments] = useState<KnowledgeDocument[]>([]);
+    const [files, setFiles] = useState<FileWithSummary[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
-    async function fetchDocuments() {
+    async function fetchFiles() {
         if (!userId) return;
-        const { data, error } = await supabase.from("documents").select("*")
-            .eq("user_id", userId).order("created_at", {
-                ascending: false,
-            });
-        if (!error && data) {
-            setDocuments(data);
+        const { data, error } = await supabase
+            .from("files")
+            .select(`
+                *,
+                chats!inner(user_id),
+                summaries:summaries(*)
+            `)
+            .eq("chats.user_id", userId)
+            .order("created_at", { ascending: false });
+
+        if (error) {
+            console.error("Error fetching files:", error);
+        } else if (data) {
+            setFiles(data as unknown as FileWithSummary[]);
         }
         setIsLoading(false);
     }
+
     useEffect(() => {
-        fetchDocuments();
+        fetchFiles();
     }, [userId]);
-    return { documents, isLoading, refetch: fetchDocuments };
+
+    return {
+        documents: files,
+        isLoading,
+        refetch: fetchFiles,
+    };
 }

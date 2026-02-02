@@ -2,6 +2,7 @@ import { supabase } from "@/lib/supabase";
 import type { UploadedTextFile } from "@/types";
 import { normalizeText } from "./normalizeText";
 import { summarizeText } from "./summarizeText";
+import { chunkText } from "./chunkText";
 
 function fileToBase64(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -29,6 +30,7 @@ async function processTextFile(file: File): Promise<UploadedTextFile> {
 
     const normalizedContent = normalizeText(text);
     const summary = await summarizeText(normalizedContent);
+    const chunks = chunkText(normalizedContent);
 
     return {
         name: file.name,
@@ -36,6 +38,7 @@ async function processTextFile(file: File): Promise<UploadedTextFile> {
         mimeType: file.type,
         content: normalizedContent,
         summary,
+        chunks,
     };
 }
 
@@ -57,6 +60,7 @@ async function processPdfFile(file: File): Promise<UploadedTextFile> {
 
     const normalizedContent = normalizeText(data.content);
     const summary = await summarizeText(normalizedContent);
+    const chunks = chunkText(normalizedContent);
 
     return {
         name: file.name,
@@ -64,6 +68,7 @@ async function processPdfFile(file: File): Promise<UploadedTextFile> {
         mimeType: file.type,
         content: normalizedContent,
         summary,
+        chunks,
     };
 }
 export async function processFile(file: File): Promise<UploadedTextFile> {

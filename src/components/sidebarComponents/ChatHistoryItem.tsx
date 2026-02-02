@@ -12,13 +12,13 @@ import {
 } from "../ui/dropdown-menu";
 import { MoreHorizontal, Trash2 } from "lucide-react";
 import { TbPencil } from "react-icons/tb";
-import type { KnowledgeDocument } from "@/types";
+import type { FileWithSummary } from "@/hooks/useKnowledgeDocuments";
 
 export default function ChatHistoryItem({
   document,
   onDelete,
 }: {
-  document: KnowledgeDocument;
+  document: FileWithSummary;
   onDelete: (documentId: string) => void;
 }) {
   const spanRef = useRef<HTMLSpanElement>(null);
@@ -43,12 +43,12 @@ export default function ChatHistoryItem({
                       : ""
                   }`}
                 >
-                  {document.title}
+                  {document.original_name}
                 </span>
 
                 <div className="flex items-center gap-1.5 mt-1">
                   <span className="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 border border-slate-200">
-                    {document.source_type}
+                    {document.file_type}
                   </span>
                   <span className="text-[10px] text-slate-400 font-medium">
                     • {new Date(document.created_at).toLocaleDateString()}
@@ -101,7 +101,7 @@ export default function ChatHistoryItem({
             </div>
 
             <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">
-              {document.content}
+              {document.clean_content}
             </p>
           </div>
         </SidebarMenuButton>
