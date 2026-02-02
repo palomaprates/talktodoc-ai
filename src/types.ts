@@ -1,3 +1,5 @@
+import type { Session, User } from "@supabase/supabase-js";
+
 export type UploadedTextFile = {
     name: string;
     size: number;
@@ -12,4 +14,14 @@ export type KnowledgeDocument = {
     source_type: string;
     original_filename: string | null;
     created_at: string;
+};
+
+export type AuthContextType = {
+    session: Session | null;
+    user: User | null;
+    isLoading: boolean;
+};
+
+export type RouterContext = {
+    auth: AuthContextType;
 };
