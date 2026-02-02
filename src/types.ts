@@ -16,6 +16,11 @@ export type Chat = {
     created_at: string;
 };
 
+export type ChatWithEntities = Chat & {
+    files: FileEntity[];
+    summaries: Summary[];
+};
+
 export type FileEntity = {
     id: string;
     chat_id: string;
@@ -59,17 +64,4 @@ export type AuthContextType = {
 
 export type RouterContext = {
     auth: AuthContextType;
-};
-
-/**
- * @deprecated Use FileEntity or Chat instead
- */
-export type KnowledgeDocument = {
-    id: string;
-    title: string;
-    content: string;
-    summary: string | null;
-    source_type: string;
-    original_filename: string | null;
-    created_at: string;
 };

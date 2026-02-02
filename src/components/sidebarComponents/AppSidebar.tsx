@@ -1,12 +1,12 @@
 import { NavUser } from "./NavUser";
 import { ChatHistoryContent } from "./ChatHistoryContent";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader } from "../ui/sidebar";
-import type { FileWithSummary } from "@/hooks/useKnowledgeDocuments";
+import type { ChatWithEntities } from "@/types";
 
 interface AppSidebarProps
   extends React.ComponentPropsWithoutRef<typeof Sidebar> {} 
 
-export function AppSidebar({ documents, onDelete, ...props }: AppSidebarProps & { documents: FileWithSummary[]; onDelete: (documentId: string) => void }) {
+export function AppSidebar({ documents, onDelete, ...props }: AppSidebarProps & { documents: ChatWithEntities[]; onDelete: (chatId: string) => void }) {
     return (
     <Sidebar {...props}>
       <SidebarContent className="flex flex-col">

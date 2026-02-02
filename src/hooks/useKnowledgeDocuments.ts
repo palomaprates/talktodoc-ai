@@ -1,42 +1,42 @@
 import { supabase } from "@/lib/supabase";
-import type { FileEntity, Summary } from "@/types";
+import type { ChatWithEntities } from "@/types";
 import { useEffect, useState } from "react";
 
-export type FileWithSummary = FileEntity & {
-    summaries: Summary[];
-};
-
 export function useKnowledgeDocuments(userId: string | undefined) {
-    const [files, setFiles] = useState<FileWithSummary[]>([]);
+    const [chats, setChats] = useState<ChatWithEntities[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
-    async function fetchFiles() {
+    async function fetchChats() {
         if (!userId) return;
+
         const { data, error } = await supabase
-            .from("files")
+            .from("chats")
             .select(`
-                *,
-                chats!inner(user_id),
-                summaries:summaries(*)
+                id,
+                title,
+                created_at,
+                user_id,
+                files (*),
+                summaries (*)
             `)
-            .eq("chats.user_id", userId)
+            .eq("user_id", userId)
             .order("created_at", { ascending: false });
 
         if (error) {
-            console.error("Error fetching files:", error);
+            console.error("Error fetching chats:", error);
         } else if (data) {
-            setFiles(data as unknown as FileWithSummary[]);
+            setChats(data as unknown as ChatWithEntities[]);
         }
         setIsLoading(false);
     }
 
     useEffect(() => {
-        fetchFiles();
+        fetchChats();
     }, [userId]);
 
     return {
-        documents: files,
+        documents: chats, // Returned as 'documents' for compatibility with Sidebar
         isLoading,
-        refetch: fetchFiles,
+        refetch: fetchChats,
     };
 }

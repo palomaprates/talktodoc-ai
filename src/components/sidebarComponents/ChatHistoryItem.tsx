@@ -12,15 +12,16 @@ import {
 } from "../ui/dropdown-menu";
 import { MoreHorizontal, Trash2 } from "lucide-react";
 import { TbPencil } from "react-icons/tb";
-import type { FileWithSummary } from "@/hooks/useKnowledgeDocuments";
+import type { ChatWithEntities } from "@/types";
 
 export default function ChatHistoryItem({
   document,
   onDelete,
 }: {
-  document: FileWithSummary;
-  onDelete: (documentId: string) => void;
+  document: ChatWithEntities;
+  onDelete: (chatId: string) => void;
 }) {
+  const firstFile = document.files?.[0];
   const spanRef = useRef<HTMLSpanElement>(null);
   const [isEditing, setIsEditing] = useState(false);
 
@@ -43,13 +44,15 @@ export default function ChatHistoryItem({
                       : ""
                   }`}
                 >
-                  {document.original_name}
+                  {document.title}
                 </span>
 
                 <div className="flex items-center gap-1.5 mt-1">
-                  <span className="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 border border-slate-200">
-                    {document.file_type}
-                  </span>
+                  {firstFile && (
+                    <span className="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 border border-slate-200">
+                      {firstFile.file_type}
+                    </span>
+                  )}
                   <span className="text-[10px] text-slate-400 font-medium">
                     • {new Date(document.created_at).toLocaleDateString()}
                   </span>
@@ -78,10 +81,10 @@ export default function ChatHistoryItem({
                         const range = window.document.createRange();
                         const selection = window.getSelection();
                         if (spanRef.current && selection) {
-                          range.selectNodeContents(spanRef.current);
-                          range.collapse(false);
-                          selection.removeAllRanges();
-                          selection.addRange(range);
+                           range.selectNodeContents(spanRef.current);
+                           range.collapse(false);
+                           selection.removeAllRanges();
+                           selection.addRange(range);
                         }
                       }, 50);
                     }}
@@ -101,7 +104,7 @@ export default function ChatHistoryItem({
             </div>
 
             <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">
-              {document.clean_content}
+              {firstFile?.clean_content || "Nenhum arquivo processado"}
             </p>
           </div>
         </SidebarMenuButton>

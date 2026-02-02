@@ -8,6 +8,7 @@ export function useAppRouter() {
      const router = createRouter({ routeTree, context: {
       auth: {
         user: auth.user,
+        session: auth.session,
         isLoading: auth.isLoading,
       },
     }})
