@@ -13,7 +13,7 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const supabaseClient = createClient(
+    const _supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? "",
       {
@@ -23,47 +23,7 @@ Deno.serve(async (req) => {
       },
     );
 
-    const { fileBase64, filename, mimeType, action, content } = await req
-      .json();
-
-    if (action === "summarize") {
-      if (!content) {
-        return new Response("Content required for summarization", {
-          status: 400,
-          headers: corsHeaders,
-        });
-      }
-
-      const mockSummary = `
-# Resumo Executivo
-
-Este documento apresenta uma análise detalhada baseada no conteúdo extraído. Abaixo, destacamos os pontos principais para uma compreensão rápida e clara.
-
----
-
-## 📝 Visão Geral
-O texto aborda fundamentalmente: **"${content.substring(0, 100).trim()}..."**
-
-## 🚀 Pontos Chave
-- **Contexto Principal**: Identificação dos temas predominantes e objetivos do documento.
-- **Destaque 1**: Observação relevante extraída das seções iniciais.
-- **Destaque 2**: Análise técnica ou conceitual identificada no corpo do texto.
-
-## 💡 Conclusões & Próximos Passos
-> O conteúdo sugere uma progressão lógica voltada para a resolução de problemas específicos ou apresentação de novos conceitos.
-
----
-_Gerado automaticamente pelo TalkToDoc AI_
-`;
-
-      return new Response(
-        JSON.stringify({ summary: mockSummary }),
-        {
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-          status: 200,
-        },
-      );
-    }
+    const { fileBase64, filename, mimeType } = await req.json();
 
     if (!fileBase64 || !mimeType) {
       return new Response("Invalid payload", {
@@ -71,12 +31,15 @@ _Gerado automaticamente pelo TalkToDoc AI_
         headers: corsHeaders,
       });
     }
+
     if (mimeType !== "application/pdf") {
       return new Response("Unsupported file type", {
         status: 415,
         headers: corsHeaders,
       });
     }
+
+    // Mock PDF to Markdown conversion
     const mockMarkdown = `
 # ${filename}
  
@@ -102,6 +65,7 @@ function example() {
 
 _End of mock document._
 `;
+
     return new Response(
       JSON.stringify({ content: mockMarkdown }),
       {

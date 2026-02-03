@@ -1,5 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import type { UploadedTextFile } from "@/types";
+
 export async function uploadDocuments(
     files: UploadedTextFile[],
     userId: string,
@@ -18,7 +19,7 @@ export async function uploadDocuments(
 
         if (chatError) {
             console.error("Error creating chat:", chatError);
-            throw chatError;
+            continue;
         }
 
         const chatId = chat.id;
@@ -36,8 +37,8 @@ export async function uploadDocuments(
             .single();
 
         if (fileError) {
-            console.error("Error creating file record:", fileError);
-            throw fileError;
+            console.error("Error inserting file:", fileError);
+            continue;
         }
 
         const fileId = fileEntity.id;
@@ -48,7 +49,6 @@ export async function uploadDocuments(
                 chat_id: chatId,
                 content: content,
                 chunk_index: index,
-                embedding: null, // Embeddings would be generated server-side or via another tool
             }));
 
             const { error: chunkError } = await supabase
@@ -59,18 +59,7 @@ export async function uploadDocuments(
                 console.warn("Error inserting chunks:", chunkError);
             }
         }
-
-        if (file.summary) {
-            const { error: summaryError } = await supabase
-                .from("summaries")
-                .insert({
-                    chat_id: chatId,
-                    content_md: file.summary,
-                });
-
-            if (summaryError) {
-                console.warn("Error inserting summary:", summaryError);
-            }
-        }
     }
+
+    return files;
 }

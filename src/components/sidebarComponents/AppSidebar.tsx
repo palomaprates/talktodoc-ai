@@ -6,7 +6,14 @@ import type { ChatWithEntities } from "@/types";
 interface AppSidebarProps
   extends React.ComponentPropsWithoutRef<typeof Sidebar> {} 
 
-export function AppSidebar({ documents, onDelete, ...props }: AppSidebarProps & { documents: ChatWithEntities[]; onDelete: (chatId: string) => void }) {
+export function AppSidebar({ 
+  documents, 
+  onDelete, 
+  ...props 
+}: AppSidebarProps & { 
+  documents: ChatWithEntities[]; 
+  onDelete: (chatId: string) => void;
+}) {
     return (
     <Sidebar {...props}>
       <SidebarContent className="flex flex-col">
@@ -15,7 +22,10 @@ export function AppSidebar({ documents, onDelete, ...props }: AppSidebarProps & 
             TalkToDoc AI
           </h1>
         </SidebarHeader>
-        <ChatHistoryContent documents={documents} onDelete={onDelete}/>
+        <ChatHistoryContent 
+          documents={documents} 
+          onDelete={onDelete} 
+        />
         </SidebarContent> 
         <SidebarFooter className="flex h-16 items-end justify-center bg-sidebar text-sidebar-foreground">
           <NavUser />

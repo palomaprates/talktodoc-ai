@@ -22,12 +22,14 @@ export const Route = createFileRoute('/dashboard')({
 
 function Dashboard() {
   const { user } = useContext(AuthContext);
+  
   const {
     documents,
     isLoading,
     refetch,
   } = useKnowledgeDocuments(user?.id);
-    const handleDelete = async (documentId: string) => {
+
+  const handleDelete = async (documentId: string) => {
     try {
       await deleteDocument(documentId);
       await refetch();
@@ -35,17 +37,32 @@ function Dashboard() {
       console.error(err);
     }
   };
-    if (isLoading) return <p>Loading...</p>;
+
+  if (isLoading) return <p>Loading...</p>;
+
   return (
-<SidebarProvider>
-<div className="min-w-screen px-4 md:px-8 flex gap-8 bg-violet-50 min-h-screen">
-  <div className="w-64 flex flex-col">
-    <AppSidebar documents={documents} onDelete={handleDelete}/>
-  </div>
-  <div className="flex-1 flex justify-around flex-col items-center">
-    <Dropzone onUploadSuccess={refetch}/>
-  </div>
-</div>
-</SidebarProvider>
+    <SidebarProvider>
+      <div className="flex w-full bg-violet-50 min-h-screen">
+        <AppSidebar 
+          documents={documents} 
+          onDelete={handleDelete} 
+        />
+        
+        <main className="flex-1 p-6 md:p-10 flex flex-col gap-8 items-center justify-center">
+          <div className="text-center space-y-4">
+            <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight">
+              Bem-vindo ao TalkToDoc AI
+            </h2>
+            <p className="text-slate-500 max-w-md mx-auto">
+              Suba seus PDFs ou arquivos de texto para começar a interagir com seus documentos de forma inteligente.
+            </p>
+          </div>
+          
+          <div className="w-full max-w-2xl">
+            <Dropzone onUploadSuccess={refetch}/>
+          </div>
+        </main>
+      </div>
+    </SidebarProvider>
   )
 }

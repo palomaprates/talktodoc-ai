@@ -16,8 +16,7 @@ export function useKnowledgeDocuments(userId: string | undefined) {
                 title,
                 created_at,
                 user_id,
-                files (*),
-                summaries (*)
+                files (*)
             `)
             .eq("user_id", userId)
             .order("created_at", { ascending: false });
@@ -35,7 +34,7 @@ export function useKnowledgeDocuments(userId: string | undefined) {
     }, [userId]);
 
     return {
-        documents: chats, // Returned as 'documents' for compatibility with Sidebar
+        documents: chats,
         isLoading,
         refetch: fetchChats,
     };

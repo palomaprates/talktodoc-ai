@@ -5,7 +5,6 @@ export type UploadedTextFile = {
     size: number;
     mimeType: string;
     content: string;
-    summary?: string;
     chunks?: string[];
 };
 
@@ -18,7 +17,6 @@ export type Chat = {
 
 export type ChatWithEntities = Chat & {
     files: FileEntity[];
-    summaries: Summary[];
 };
 
 export type FileEntity = {
@@ -38,13 +36,6 @@ export type Chunk = {
     content: string;
     embedding: number[] | null;
     chunk_index: number;
-    created_at: string;
-};
-
-export type Summary = {
-    id: string;
-    chat_id: string;
-    content_md: string;
     created_at: string;
 };
 

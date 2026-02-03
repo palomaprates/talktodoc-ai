@@ -1,31 +1,25 @@
 import { supabase } from "@/lib/supabase";
 
-export async function deleteDocument(fileId: string) {
-  const { data: file, error: fetchError } = await supabase
-    .from("files")
-    .select("chat_id")
-    .eq("id", fileId)
-    .single();
+export async function deleteDocument(chatId: string) {
+  if (!chatId) return;
 
-  if (fetchError) {
-    console.error("Error fetching file for deletion:", fetchError);
+  try {
+    await Promise.all([
+      supabase.from("chunks").delete().eq("chat_id", chatId),
+      supabase.from("messages").delete().eq("chat_id", chatId),
+      supabase.from("files").delete().eq("chat_id", chatId),
+    ]);
+  } catch (err) {
+    console.warn("Secondary cleanup notice:", err);
   }
 
-  const chatId = file?.chat_id;
-  const { error: fileDeleteError } = await supabase
-    .from("files")
+  const { error } = await supabase
+    .from("chats")
     .delete()
-    .eq("id", fileId);
+    .eq("id", chatId);
 
-  if (fileDeleteError) {
-    console.error("Error deleting file:", fileDeleteError);
-    throw fileDeleteError;
-  }
-
-  if (chatId) {
-    await supabase.from("summaries").delete().eq("chat_id", chatId);
-    await supabase.from("chunks").delete().eq("chat_id", chatId);
-    await supabase.from("messages").delete().eq("chat_id", chatId);
-    await supabase.from("chats").delete().eq("id", chatId);
+  if (error) {
+    console.error("Error deleting chat:", error);
+    throw error;
   }
 }

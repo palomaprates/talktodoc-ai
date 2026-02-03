@@ -28,8 +28,11 @@ export default function ChatHistoryItem({
   return (
     <SidebarMenuItem>
       <div className="relative group w-full px-1">
-        <SidebarMenuButton asChild className="w-full h-auto p-0 hover:bg-transparent">
-          <div className="w-full rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition-all duration-200 hover:border-violet-300 hover:shadow-md flex flex-col gap-2">
+        <SidebarMenuButton 
+          asChild 
+          className="w-full h-auto p-0 hover:bg-transparent cursor-default"
+        >
+          <div className="w-full rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition-all duration-200 flex flex-col gap-2 hover:border-violet-300 hover:shadow-md">
             <div className="flex justify-between items-start gap-2">
               <div className="flex-1 min-w-0">
                 <span
@@ -61,7 +64,10 @@ export default function ChatHistoryItem({
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="p-1 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-100 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button 
+                    className="p-1 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-100 opacity-0 group-hover:opacity-100 transition-opacity"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     <MoreHorizontal className="size-4" />
                   </button>
                 </DropdownMenuTrigger>
@@ -74,7 +80,8 @@ export default function ChatHistoryItem({
                 >
                   <DropdownMenuItem
                     className="flex items-center gap-2 cursor-pointer focus:bg-violet-50 focus:text-violet-600"
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
                       setIsEditing(true);
                       setTimeout(() => {
                         spanRef.current?.focus();

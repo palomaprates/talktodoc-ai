@@ -8,10 +8,10 @@ import type { ChatWithEntities } from "@/types";
 
 export function ChatHistoryContent({ 
   documents, 
-  onDelete 
+  onDelete,
 }: { 
   documents: ChatWithEntities[]; 
-  onDelete: (chatId: string) => void 
+  onDelete: (chatId: string) => void;
 }) {
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden min-h-full p-4">
@@ -20,7 +20,11 @@ export function ChatHistoryContent({
       </SidebarGroupLabel>
       <SidebarMenu className="gap-3">
         {documents.map((document) => (
-          <ChatHistoryItem key={document.id} document={document} onDelete={onDelete} />
+          <ChatHistoryItem 
+            key={document.id} 
+            document={document} 
+            onDelete={onDelete} 
+          />
         ))}
       </SidebarMenu>
     </SidebarGroup>
