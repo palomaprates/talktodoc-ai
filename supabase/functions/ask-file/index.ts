@@ -37,8 +37,6 @@ Deno.serve(async (req) => {
         },
       },
     );
-
-    // 2. Buscar o content correspondente no banco de dados
     const { data: file, error: dbError } = await supabaseClient
       .from("files")
       .select("raw_content")
@@ -59,7 +57,6 @@ Deno.serve(async (req) => {
       );
     }
 
-    // 3. Montar o prompt usando content e question
     const prompt =
       `Você é um assistente especializado em análise de documentos. Sua tarefa é responder à pergunta fornecida baseando-se **EXCLUSIVAMENTE** no texto de contexto abaixo.
 
@@ -76,7 +73,6 @@ ${question}
 
 **Resposta:**`;
 
-    // 4. Chamar um modelo de linguagem real (ex: OpenAI)
     const openAiApiKey = Deno.env.get("OPENAI_API_KEY");
     if (!openAiApiKey) {
       return new Response(
@@ -100,7 +96,7 @@ ${question}
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "gpt-4o-mini", // Or whichever model you prefer
+          model: "gpt-4o-mini",
           messages: [
             {
               role: "system",
@@ -135,7 +131,6 @@ ${question}
     const aiData = await aiResponse.json();
     const answer = aiData.choices[0].message.content;
 
-    // 5. Retornar a resposta como JSON
     return new Response(JSON.stringify({ answer }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
