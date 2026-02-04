@@ -8,11 +8,15 @@ interface AppSidebarProps
 
 export function AppSidebar({ 
   documents, 
-  onDelete, 
+  onDelete,
+  onSelectChat,
+  activeChatId,
   ...props 
 }: AppSidebarProps & { 
   documents: ChatWithEntities[]; 
   onDelete: (chatId: string) => void;
+  onSelectChat: (chatId: string) => void;
+  activeChatId?: string;
 }) {
     return (
     <Sidebar {...props}>
@@ -24,7 +28,9 @@ export function AppSidebar({
         </SidebarHeader>
         <ChatHistoryContent 
           documents={documents} 
-          onDelete={onDelete} 
+          onDelete={onDelete}
+          onSelectChat={onSelectChat}
+          activeChatId={activeChatId}
         />
         </SidebarContent> 
         <SidebarFooter className="flex h-16 items-end justify-center bg-sidebar text-sidebar-foreground">

@@ -9,9 +9,13 @@ import type { ChatWithEntities } from "@/types";
 export function ChatHistoryContent({ 
   documents, 
   onDelete,
+  onSelectChat,
+  activeChatId,
 }: { 
   documents: ChatWithEntities[]; 
   onDelete: (chatId: string) => void;
+  onSelectChat: (chatId: string) => void;
+  activeChatId?: string;
 }) {
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden min-h-full p-4">
@@ -23,7 +27,9 @@ export function ChatHistoryContent({
           <ChatHistoryItem 
             key={document.id} 
             document={document} 
-            onDelete={onDelete} 
+            onDelete={onDelete}
+            onSelectChat={onSelectChat}
+            isActive={activeChatId === document.id}
           />
         ))}
       </SidebarMenu>

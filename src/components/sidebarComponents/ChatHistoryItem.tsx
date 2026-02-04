@@ -17,9 +17,13 @@ import type { ChatWithEntities } from "@/types";
 export default function ChatHistoryItem({
   document,
   onDelete,
+  onSelectChat,
+  isActive,
 }: {
   document: ChatWithEntities;
   onDelete: (chatId: string) => void;
+  onSelectChat: (chatId: string) => void;
+  isActive: boolean;
 }) {
   const firstFile = document.files?.[0];
   const spanRef = useRef<HTMLSpanElement>(null);
@@ -30,9 +34,16 @@ export default function ChatHistoryItem({
       <div className="relative group w-full px-1">
         <SidebarMenuButton 
           asChild 
-          className="w-full h-auto p-0 hover:bg-transparent cursor-default"
+          className="w-full h-auto p-0 hover:bg-transparent cursor-pointer"
         >
-          <div className="w-full rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition-all duration-200 flex flex-col gap-2 hover:border-violet-300 hover:shadow-md">
+          <div 
+            onClick={() => onSelectChat(document.id)}
+            className={`w-full rounded-xl border p-4 shadow-sm transition-all duration-200 flex flex-col gap-2 hover:border-violet-300 hover:shadow-md ${
+              isActive 
+                ? "border-violet-400 bg-violet-50/50 ring-2 ring-violet-500/10 shadow-lg" 
+                : "border-slate-200 bg-white"
+            }`}
+          >
             <div className="flex justify-between items-start gap-2">
               <div className="flex-1 min-w-0">
                 <span
