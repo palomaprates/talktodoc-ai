@@ -3,62 +3,26 @@ import type { UploadedTextFile } from "@/types";
 
 export async function uploadDocuments(
     files: UploadedTextFile[],
-    userId: string,
+    _userId: string,
 ) {
     if (!files.length) return [];
 
     for (const file of files) {
-        const { data: chat, error: chatError } = await supabase
-            .from("chats")
-            .insert({
-                user_id: userId,
-                title: file.name,
-            })
-            .select()
-            .single();
+        console.log(`Uploading and ingesting: ${file.name}`);
+        const { data, error } = await supabase.functions.invoke("ingest-file", {
+            body: {
+                fileName: file.name,
+                fileType: file.mimeType,
+                content: file.content,
+            },
+        });
 
-        if (chatError) {
-            console.error("Error creating chat:", chatError);
-            continue;
+        if (error) {
+            console.error(`Error ingesting ${file.name}:`, error);
+            throw error;
         }
 
-        const chatId = chat.id;
-
-        const { data: fileEntity, error: fileError } = await supabase
-            .from("files")
-            .insert({
-                chat_id: chatId,
-                original_name: file.name,
-                file_type: file.mimeType,
-                raw_content: file.content,
-                clean_content: file.content,
-            })
-            .select()
-            .single();
-
-        if (fileError) {
-            console.error("Error inserting file:", fileError);
-            continue;
-        }
-
-        const fileId = fileEntity.id;
-
-        if (file.chunks && file.chunks.length > 0) {
-            const chunksToInsert = file.chunks.map((content, index) => ({
-                file_id: fileId,
-                chat_id: chatId,
-                content: content,
-                chunk_index: index,
-            }));
-
-            const { error: chunkError } = await supabase
-                .from("chunks")
-                .insert(chunksToInsert);
-
-            if (chunkError) {
-                console.warn("Error inserting chunks:", chunkError);
-            }
-        }
+        console.log(`Ingested ${file.name} successfully:`, data);
     }
 
     return files;

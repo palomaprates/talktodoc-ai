@@ -115,6 +115,7 @@ export function Dropzone( {onUploadSuccess}: {onUploadSuccess: () => Promise<voi
           onChange={handleFileInputChange}
           className="hidden"
           multiple
+          accept=".pdf,.txt"
         />
         
         <div className={`

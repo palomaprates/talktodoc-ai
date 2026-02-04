@@ -1,63 +1,46 @@
-import { corsHeaders } from "../../../constants/corsHeaders.ts";
-
 export const askAI = async (prompt: string) => {
-  const openAiApiKey = Deno.env.get("OPENAI_API_KEY");
-  if (!openAiApiKey) {
-    return new Response(
-      JSON.stringify({ error: "OpenAI API key not configured" }),
-      {
-        headers: {
-          ...corsHeaders,
-          "Content-Type": "application/json",
-        },
-        status: 500,
-      },
-    );
+  const geminiApiKey = Deno.env.get("GEMINI_API_KEY");
+  if (!geminiApiKey) {
+    console.error("GEMINI_API_KEY is not configured");
+    throw new Error("AI configuration error: Missing Gemini API Key");
   }
 
   const aiResponse = await fetch(
-    "https://api.openai.com/v1/chat/completions",
+    `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`,
     {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${openAiApiKey}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [
+        contents: [
           {
-            role: "system",
-            content:
-              "Você é um assistente útil que responde perguntas com base em documentos.",
+            parts: [
+              {
+                text: prompt,
+              },
+            ],
           },
-          { role: "user", content: prompt },
         ],
-        temperature: 0,
+        generationConfig: {
+          temperature: 0,
+        },
       }),
     },
   );
 
   if (!aiResponse.ok) {
     const errorData = await aiResponse.json();
-    console.error("OpenAI error:", errorData);
-    return new Response(
-      JSON.stringify({
-        error: "Error calling AI model",
-        details: errorData,
-      }),
-      {
-        headers: {
-          ...corsHeaders,
-          "Content-Type": "application/json",
-        },
-        status: 502,
-      },
-    );
+    console.error("Gemini error:", errorData);
+    throw new Error(`Error calling Gemini: ${JSON.stringify(errorData)}`);
   }
 
   const aiData = await aiResponse.json();
-  const answer = aiData.choices[0].message.content;
 
-  return answer;
+  if (!aiData.candidates?.[0]?.content?.parts?.[0]?.text) {
+    console.error("Unexpected Gemini response structure:", aiData);
+    throw new Error("Invalid response from AI model");
+  }
+
+  return aiData.candidates[0].content.parts[0].text;
 };
