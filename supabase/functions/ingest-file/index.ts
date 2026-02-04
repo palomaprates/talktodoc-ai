@@ -78,7 +78,7 @@ Deno.serve(async (req) => {
     }
 
     const cleanText = normalizeText(rawText);
-    const chunks = chunkText(cleanText);
+    const chunks = chunkText(cleanText, 100, 200, 0.1);
 
     // 1. Create a Chat
     const { data: chat, error: chatError } = await supabaseClient
