@@ -120,8 +120,13 @@
     @apply border-border outline-ring/50;
     @apply dark:border-border dark:outline-ring/50;
   }
+  html,
+  body,
+  #root {
+    @apply min-h-screen;
+  }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-violet-50 text-foreground;
     @apply dark:bg-background dark:text-foreground;
     font-family: var(--font-sans);
   }

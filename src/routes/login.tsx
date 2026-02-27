@@ -3,7 +3,7 @@ import { Auth } from '@supabase/auth-ui-react'
 import { ThemeSupa } from '@supabase/auth-ui-shared'
 import { supabase } from '../lib/supabase'
 import { useContext, useEffect } from 'react'
-import { AuthContext } from '../auth/AuthContext'
+import { AuthContext } from '@/features/auth/AuthContext'
 
 export const Route = createFileRoute('/login')({
   component: LoginComponent,

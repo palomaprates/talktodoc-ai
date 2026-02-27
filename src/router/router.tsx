@@ -1,7 +1,7 @@
 import { createRouter } from '@tanstack/react-router'
 import { routeTree } from '../routeTree.gen'
 import { useContext } from 'react'
-import { AuthContext } from '../auth/AuthContext'
+import { AuthContext } from '@/features/auth/AuthContext'
 
 export function useAppRouter() {
     const auth = useContext(AuthContext)

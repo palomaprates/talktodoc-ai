@@ -3,7 +3,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { ChevronsUpDown, LogOut } from "lucide-react";
 import { useContext } from "react";
-import { AuthContext } from "@/auth/AuthContext";
+import { AuthContext } from "@/features/auth/AuthContext";
 import { supabase } from "@/lib/supabase";
 
 export function NavUser() {
@@ -41,7 +41,6 @@ export function NavUser() {
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-            // side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={4}
             >

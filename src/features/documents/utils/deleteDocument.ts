@@ -13,10 +13,7 @@ export async function deleteDocument(chatId: string) {
     console.warn("Secondary cleanup notice:", err);
   }
 
-  const { error } = await supabase
-    .from("chats")
-    .delete()
-    .eq("id", chatId);
+  const { error } = await supabase.from("chats").delete().eq("id", chatId);
 
   if (error) {
     console.error("Error deleting chat:", error);

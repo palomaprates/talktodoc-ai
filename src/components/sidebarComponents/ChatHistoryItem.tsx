@@ -31,52 +31,54 @@ export default function ChatHistoryItem({
 
   return (
     <SidebarMenuItem>
-      <div className="relative group w-full px-1">
-        <SidebarMenuButton 
-          asChild 
+      <div className="relative group w-full px-1.5 py-0.5">
+        <SidebarMenuButton
+          asChild
           className="w-full h-auto p-0 hover:bg-transparent cursor-pointer"
         >
-          <div 
+          <div
             onClick={() => onSelectChat(document.id)}
-            className={`w-full rounded-xl border p-4 shadow-sm transition-all duration-200 flex flex-col gap-2 hover:border-violet-300 hover:shadow-md ${
-              isActive 
-                ? "border-violet-400 bg-violet-50/50 ring-2 ring-violet-500/10 shadow-lg" 
+            className={`w-full rounded-xl border p-3.5 shadow-sm transition-all duration-200 flex flex-col gap-2 hover:border-violet-300 hover:shadow-md ${
+              isActive
+                ? "border-violet-400 bg-violet-50/80 ring-2 ring-violet-500/15 shadow-md"
                 : "border-slate-200 bg-white"
             }`}
           >
             <div className="flex justify-between items-start gap-2">
-              <div className="flex-1 min-w-0">
+              <div className="flex-1 min-w-0 justify-start items-start ml-4">
                 <span
                   ref={spanRef}
                   contentEditable={isEditing}
                   suppressContentEditableWarning
                   onMouseDown={(e) => e.stopPropagation()}
                   tabIndex={isEditing ? 0 : -1}
-                  className={`block text-sm font-semibold text-slate-800 break-words ${
+                  className={`block text-lg sm:text-sm font-semibold text-slate-800 break-words truncate ${
                     isEditing
-                      ? "border-2 border-violet-400 bg-violet-50 rounded px-1 outline-none"
+                      ? "border-2 border-violet-400 bg-violet-50 rounded px-1 py-0.5 outline-none"
                       : ""
                   }`}
                 >
                   {document.title}
                 </span>
 
-                <div className="flex items-center gap-1.5 mt-1">
+                <div className="flex items-center justify-start gap-1.5 mt-1">
                   {firstFile && (
-                    <span className="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 border border-slate-200">
+                    <span className="text-[10px] font-semibold uppercase px-1.5 py-0.5 rounded-full bg-violet-50 text-violet-600 border border-violet-100">
                       {firstFile.file_type}
                     </span>
                   )}
                   <span className="text-[10px] text-slate-400 font-medium">
-                    • {new Date(document.created_at).toLocaleDateString()}
+                    {new Date(document.created_at).toLocaleDateString()}
                   </span>
                 </div>
               </div>
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button 
-                    className="p-1 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-100 opacity-0 group-hover:opacity-100 transition-opacity"
+                <button
+                  className={`p-1 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-opacity ${
+                    isActive ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                  }`}
                     onClick={(e) => e.stopPropagation()}
                   >
                     <MoreHorizontal className="size-4" />
@@ -113,7 +115,13 @@ export default function ChatHistoryItem({
 
                   <DropdownMenuSeparator />
 
-                  <DropdownMenuItem onClick={(e) => {e.stopPropagation(); onDelete(document.id)}} className="flex items-center gap-2 cursor-pointer text-red-500 focus:bg-red-50 focus:text-red-600">
+                <DropdownMenuItem
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDelete(document.id);
+                  }}
+                  className="flex items-center gap-2 cursor-pointer text-red-500 focus:bg-red-50 focus:text-red-600"
+                >
                     <Trash2 className="size-3.5" />
                     <span className="text-xs font-medium">Excluir</span>
                   </DropdownMenuItem>
@@ -121,7 +129,7 @@ export default function ChatHistoryItem({
               </DropdownMenu>
             </div>
 
-            <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">
+            <p className="text-[11px] sm:text-xs text-slate-500 line-clamp-2 leading-relaxed">
               {firstFile?.clean_content || "Nenhum arquivo processado"}
             </p>
           </div>
