@@ -18,7 +18,7 @@ export function ChatHistoryContent({
   activeChatId?: string;
 }) {
   return (
-    <SidebarGroup className="group-data-[collapsible=icon]:hidden min-h-full p-4 space-y-3">
+    <SidebarGroup className="group-data-[collapsible=icon]:hidden p-4 space-y-3">
       <SidebarGroupLabel className="text-xs font-semibold text-slate-500 uppercase tracking-[0.16em] px-1">
         Seus Documentos
       </SidebarGroupLabel>
