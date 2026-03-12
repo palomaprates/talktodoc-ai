@@ -3,8 +3,8 @@ const CHARS_PER_TOKEN = 4;
 export function chunkText(
   text: string,
   minTokens: number = 300,
-  maxTokens: number = 800,
-  overlapPercent: number = 0.2,
+  maxTokens: number = 400,
+  overlapPercent: number = 0.1,
 ): string[] {
   if (!text) return [];
 

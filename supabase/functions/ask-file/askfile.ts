@@ -1,6 +1,12 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.7";
 
-export const askFile = async (file_id: string, authHeader: string | null) => {
+export const getRelevantChunks = async (
+  file_id: string,
+  queryEmbedding: number[],
+  authHeader: string | null,
+  matchCount: number = 5,
+  matchThreshold: number = 0.2,
+) => {
   const supabaseUrl = Deno.env.get("LOCAL_SUPABASE_URL") ?? "";
   const supabaseAnonKey = Deno.env.get("LOCAL_SUPABASE_ANON_KEY") ?? "";
 
@@ -12,7 +18,7 @@ export const askFile = async (file_id: string, authHeader: string | null) => {
 
   const { data: file, error: dbError } = await supabaseClient
     .from("files")
-    .select("raw_content")
+    .select("id, chat_id")
     .eq("id", file_id)
     .single();
 
@@ -21,5 +27,20 @@ export const askFile = async (file_id: string, authHeader: string | null) => {
     return null;
   }
 
-  return file;
+  const { data: chunks, error: chunkError } = await supabaseClient.rpc(
+    "match_chunks",
+    {
+      query_embedding: `[${queryEmbedding.join(",")}]`,
+      match_threshold: matchThreshold,
+      match_count: matchCount,
+      p_chat_id: file.chat_id,
+    },
+  );
+
+  if (chunkError) {
+    console.error("Chunk search error:", chunkError);
+    return null;
+  }
+
+  return chunks;
 };
