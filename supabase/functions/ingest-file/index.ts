@@ -3,6 +3,7 @@ import { corsHeaders } from "../../constants/corsHeaders.ts";
 import { normalizeText } from "./utils/normalizeText.ts";
 import { chunkText } from "./utils/chunkText.ts";
 import pdf from "npm:pdf-parse@1.1.1";
+import { embedTexts } from "../utils/geminiEmbeddings.ts";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -78,7 +79,7 @@ Deno.serve(async (req) => {
     }
 
     const cleanText = normalizeText(rawText);
-    const chunks = chunkText(cleanText, 100, 200, 0.1);
+    const chunks = chunkText(cleanText, 300, 400, 0.1);
 
     // 1. Create a Chat
     const { data: chat, error: chatError } = await supabaseClient
@@ -110,10 +111,17 @@ Deno.serve(async (req) => {
 
     // 3. Create Chunks
     if (chunks.length > 0) {
+      const chunkEmbeddings = await embedTexts(
+        chunks,
+        "RETRIEVAL_DOCUMENT",
+        768,
+      );
+
       const chunksToInsert = chunks.map((content, index) => ({
         file_id: fileEntity.id,
         chat_id: chat.id,
         content: content,
+        embedding: `[${chunkEmbeddings[index].join(",")}]`,
         chunk_index: index,
       }));
 

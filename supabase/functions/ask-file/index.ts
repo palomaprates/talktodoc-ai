@@ -1,7 +1,8 @@
 import { corsHeaders } from "../../constants/corsHeaders.ts";
-import { askFile } from "./askfile.ts";
+import { getRelevantChunks } from "./askfile.ts";
 import { setPrompt } from "./utils/setPrompt.ts";
 import { askAI } from "./utils/askAI.ts";
+import { embedTexts } from "../utils/geminiEmbeddings.ts";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -25,20 +26,34 @@ Deno.serve(async (req) => {
     }
 
     const authHeader = req.headers.get("Authorization");
-    const file = await askFile(file_id, authHeader);
-    if (!file) {
+
+    const [queryEmbedding] = await embedTexts(
+      [question],
+      "RETRIEVAL_QUERY",
+      768,
+    );
+
+    const chunks = await getRelevantChunks(
+      file_id,
+      queryEmbedding,
+      authHeader,
+      5,
+      0.2,
+    );
+
+    if (!chunks || chunks.length === 0) {
       return new Response(
-        JSON.stringify({ error: "File not found or database error" }),
+        JSON.stringify({ answer: "Não sei" }),
         {
           headers: {
             ...corsHeaders,
             "Content-Type": "application/json",
           },
-          status: 404,
+          status: 200,
         },
       );
     }
-    const prompt = setPrompt(file, question);
+    const prompt = setPrompt(chunks, question);
     const aiResponse = await askAI(prompt);
 
     return new Response(JSON.stringify({ answer: aiResponse }), {
