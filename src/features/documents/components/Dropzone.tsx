@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef, useContext } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import { AuthContext } from "@/features/auth/AuthContext";
 import { FaFile } from "react-icons/fa";
 import { TbTrash } from "react-icons/tb";
@@ -55,9 +56,10 @@ function validateFiles(fileList: FileList): { ok: File[]; errors: string[] } {
 export function Dropzone({
   onUploadSuccess,
 }: {
-  onUploadSuccess: () => Promise<void>;
+  onUploadSuccess: (chatId: string) => Promise<void> | void;
 }) {
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [files, setFiles] = useState<UploadedTextFile[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -132,12 +134,13 @@ export function Dropzone({
   const handleUpload = async () => {
     if (!user) return;
     try {
-      await uploadDocuments(files, user.id);
-      await onUploadSuccess();
+      const result = await uploadDocuments(files, user.id);
+      await onUploadSuccess(result.chat_id);
       setFiles([]);
       toast.success(
         "Arquivos enviados! Você já pode conversar com o documento.",
       );
+      navigate({ to: "/dashboard/$chatId", params: { chatId: result.chat_id } });
     } catch (err) {
       console.error(err);
       toast.error("Falha ao enviar arquivos. Tente novamente.");

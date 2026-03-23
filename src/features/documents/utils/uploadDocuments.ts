@@ -1,29 +1,36 @@
 import { supabase } from "@/lib/supabase";
 import type { UploadedTextFile } from "@/types";
 
+type UploadResult = {
+  chat_id: string;
+  file_ids: string[];
+  chunks_count: number;
+};
+
 export async function uploadDocuments(
   files: UploadedTextFile[],
   _userId: string,
-) {
-  if (!files.length) return [];
-
-  for (const file of files) {
-    console.log(`Uploading and ingesting: ${file.name}`);
-    const { data, error } = await supabase.functions.invoke("ingest-file", {
-      body: {
-        fileName: file.name,
-        fileType: file.mimeType,
-        content: file.content,
-      },
-    });
-
-    if (error) {
-      console.error(`Error ingesting ${file.name}:`, error);
-      throw error;
-    }
-
-    console.log(`Ingested ${file.name} successfully:`, data);
+): Promise<UploadResult> {
+  if (!files.length) {
+    throw new Error("No files to upload");
   }
 
-  return files;
+  const payload = {
+    files: files.map((file) => ({
+      fileName: file.name,
+      fileType: file.mimeType,
+      content: file.content,
+    })),
+  };
+
+  const { data, error } = await supabase.functions.invoke("ingest-file", {
+    body: payload,
+  });
+
+  if (error) {
+    console.error("Error ingesting files:", error);
+    throw error;
+  }
+
+  return data as UploadResult;
 }

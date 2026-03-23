@@ -1,10 +1,10 @@
-import { createFileRoute, redirect } from '@tanstack/react-router'
+import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
 import { AppSidebar } from '@/components/sidebarComponents/AppSidebar'
 import { SidebarProvider } from '@/components/ui/sidebar'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Dropzone } from '@/features/documents/components/Dropzone'
 import { useKnowledgeDocuments } from '@/features/documents/hooks/useKnowledgeDocuments'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '@/features/auth/AuthContext'
 import { deleteDocument } from '@/features/documents/utils/deleteDocument'
 import { ChatViewer } from '@/features/chat/components/ChatViewer'
@@ -20,12 +20,17 @@ export const Route = createFileRoute('/dashboard')({
       throw redirect({ to: '/login' })
     }
   },
-  component: Dashboard,
+  component: DashboardRoute,
 })
 
-function Dashboard() {
+function DashboardRoute() {
+  return <Dashboard />
+}
+
+export function Dashboard({ initialChatId }: { initialChatId?: string } = {}) {
   const { user } = useContext(AuthContext);
-  const [selectedFile, setSelectedFile] = useState<{ chatId: string; fileId: string } | null>(null);
+  const navigate = useNavigate();
+  const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
   
   const {
     documents,
@@ -36,8 +41,8 @@ function Dashboard() {
   const handleDelete = async (documentId: string) => {
     try {
       await deleteDocument(documentId);
-      if (selectedFile?.chatId === documentId) {
-        setSelectedFile(null);
+      if (selectedChatId === documentId) {
+        setSelectedChatId(null);
       }
       await refetch();
       toast.success("Documento removido.");
@@ -49,13 +54,19 @@ function Dashboard() {
 
   const handleSelectChat = (chatId: string) => {
     const chat = documents.find((d) => d.id === chatId);
-    if (chat && chat.files && chat.files.length > 0) {
-      setSelectedFile({
-        chatId: chat.id,
-        fileId: chat.files[0].id,
-      });
+    if (chat) {
+      setSelectedChatId(chat.id);
+      navigate({ to: "/dashboard/$chatId", params: { chatId: chat.id } });
     }
   };
+
+  useEffect(() => {
+    if (!initialChatId || isLoading) return;
+    const chat = documents.find((d) => d.id === initialChatId);
+    if (chat) {
+      setSelectedChatId(chat.id);
+    }
+  }, [initialChatId, isLoading, documents]);
 
   if (isLoading) {
     return (
@@ -87,16 +98,18 @@ function Dashboard() {
           documents={documents} 
           onDelete={handleDelete}
           onSelectChat={handleSelectChat}
-          activeChatId={selectedFile?.chatId}
+          activeChatId={selectedChatId ?? undefined}
         />
         
         <main className="flex-1 p-6 md:p-10 flex flex-col gap-8 items-center justify-center">
-          {selectedFile ? (
+          {selectedChatId ? (
             <ChatViewer 
-              chatId={selectedFile.chatId} 
-              fileId={selectedFile.fileId}
-              documentTitle={documents.find((d) => d.id === selectedFile.chatId)?.title}
-              onBack={() => setSelectedFile(null)}
+              chatId={selectedChatId} 
+              documentTitle={documents.find((d) => d.id === selectedChatId)?.title}
+              onBack={() => {
+                setSelectedChatId(null);
+                navigate({ to: "/dashboard" });
+              }}
             />
           ) : (
             <>
@@ -110,7 +123,10 @@ function Dashboard() {
               </div>
               
               <div className="w-full max-w-2xl">
-                <Dropzone onUploadSuccess={refetch}/>
+                <Dropzone onUploadSuccess={async (chatId) => {
+                  await refetch();
+                  setSelectedChatId(chatId);
+                }}/>
               </div>
             </>
           )}

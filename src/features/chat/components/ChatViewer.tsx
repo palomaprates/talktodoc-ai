@@ -15,14 +15,12 @@ const QUICK_PROMPTS = [
 
 interface ChatViewerProps {
   chatId: string;
-  fileId: string;
   documentTitle?: string;
   onBack: () => void;
 }
 
 export function ChatViewer({
   chatId,
-  fileId,
   documentTitle,
   onBack,
 }: ChatViewerProps) {
@@ -67,10 +65,32 @@ export function ChatViewer({
       const userMsg = await insertMessage(chatId, "user", currentInput);
       setMessages((prev) => [...prev, userMsg]);
 
-      const answer = await askFile(fileId, currentInput);
+      const tempId = `temp-${Date.now()}`;
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: tempId,
+          chat_id: chatId,
+          role: "assistant",
+          content: "",
+          created_at: new Date().toISOString(),
+        },
+      ]);
 
-      const aiMsg = await insertMessage(chatId, "assistant", answer);
-      setMessages((prev) => [...prev, aiMsg]);
+      let finalAnswer = "";
+      await askFile(chatId, currentInput, (token) => {
+        finalAnswer += token;
+        setMessages((prev) =>
+          prev.map((msg) =>
+            msg.id === tempId ? { ...msg, content: finalAnswer } : msg
+          )
+        );
+      });
+
+      const aiMsg = await insertMessage(chatId, "assistant", finalAnswer);
+      setMessages((prev) =>
+        prev.map((msg) => (msg.id === tempId ? aiMsg : msg))
+      );
     } catch (error) {
       console.error("Error in chat flow:", error);
       toast.error("Erro ao enviar mensagem. Tente novamente.");
@@ -101,8 +121,8 @@ export function ChatViewer({
         >
           ← Voltar para Upload
         </Button>
-        <div className="text-sm font-medium text-slate-700 truncate max-w-[240px]" title={documentTitle ?? fileId}>
-          {documentTitle ?? fileId.split("-")[0]}
+        <div className="text-sm font-medium text-slate-700 truncate max-w-[240px]" title={documentTitle ?? chatId}>
+          {documentTitle ?? chatId.split("-")[0]}
         </div>
       </div>
 
