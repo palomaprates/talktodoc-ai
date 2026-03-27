@@ -151,11 +151,10 @@ export function Dropzone({
     if (!user) return;
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      console.log("session?", !!session, session?.access_token?.slice(0, 20));
-      if (!session) {
-        toast.error("erro login");
-        return;
-      }
+
+console.log("SESSION:", session);
+console.log("TOKEN:", session?.access_token);
+console.log("URL:", import.meta.env.VITE_SUPABASE_URL);
       const result = await uploadDocuments(files);
       await onUploadSuccess(result.chat_id);
       setFiles([]);
