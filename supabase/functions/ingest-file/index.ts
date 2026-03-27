@@ -34,8 +34,8 @@ Deno.serve(async (req) => {
     }
 
     const supabaseClient = createClient(
-      Deno.env.get("LOCAL_SUPABASE_URL") ?? "",
-      Deno.env.get("LOCAL_SUPABASE_ANON_KEY") ?? "",
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
       {
         global: {
           headers: { Authorization: authHeader },
