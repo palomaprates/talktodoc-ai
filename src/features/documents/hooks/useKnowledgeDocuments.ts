@@ -26,9 +26,16 @@ export function useKnowledgeDocuments(userId: string | undefined) {
     fetchChats();
   }, [fetchChats]);
 
+  const updateDocumentTitle = useCallback((chatId: string, title: string) => {
+    setChats((prev) =>
+      prev.map((chat) => (chat.id === chatId ? { ...chat, title } : chat)),
+    );
+  }, []);
+
   return {
     documents: chats,
     isLoading,
     refetch: fetchChats,
+    updateDocumentTitle,
   };
 }

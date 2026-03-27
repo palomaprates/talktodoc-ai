@@ -11,11 +11,13 @@ export function ChatHistoryContent({
   onDelete,
   onSelectChat,
   activeChatId,
+  onRenameChat,
 }: {
   documents: ChatWithEntities[];
   onDelete: (chatId: string) => void;
   onSelectChat: (chatId: string) => void;
   activeChatId?: string;
+  onRenameChat: (chatId: string, title: string) => void;
 }) {
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden px-4 pb-4 space-y-3">
@@ -40,6 +42,7 @@ export function ChatHistoryContent({
               onDelete={onDelete}
               onSelectChat={onSelectChat}
               isActive={activeChatId === document.id}
+              onRename={onRenameChat}
             />
           ))
         )}

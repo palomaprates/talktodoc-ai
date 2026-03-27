@@ -11,6 +11,7 @@ export function AppSidebar({
   onSelectChat,
   activeChatId,
   onNewChat,
+  onRenameChat,
   ...props 
 }: AppSidebarProps & { 
   documents: ChatWithEntities[]; 
@@ -18,6 +19,7 @@ export function AppSidebar({
   onSelectChat: (chatId: string) => void;
   activeChatId?: string;
   onNewChat: () => void;
+  onRenameChat: (chatId: string, title: string) => void;
 }) {
     return (
     <Sidebar {...props}>
@@ -39,6 +41,7 @@ export function AppSidebar({
           onDelete={onDelete}
           onSelectChat={onSelectChat}
           activeChatId={activeChatId}
+          onRenameChat={onRenameChat}
         />
         </SidebarContent> 
         <SidebarFooter className="flex h-16 items-end justify-center bg-sidebar text-sidebar-foreground">

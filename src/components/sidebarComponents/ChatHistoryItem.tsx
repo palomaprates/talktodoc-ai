@@ -20,16 +20,24 @@ export default function ChatHistoryItem({
   onDelete,
   onSelectChat,
   isActive,
+  onRename,
 }: {
   document: ChatWithEntities;
   onDelete: (chatId: string) => void;
   onSelectChat: (chatId: string) => void;
   isActive: boolean;
+  onRename: (chatId: string, title: string) => void;
 }) {
   const firstFile = document.files?.[0];
   const spanRef = useRef<HTMLSpanElement>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [localTitle, setLocalTitle] = useState(document.title);
+
+  useEffect(() => {
+    if (!isEditing) {
+      setLocalTitle(document.title);
+    }
+  }, [document.title, isEditing]);
 
   useEffect(() => {
     if (!isEditing || !spanRef.current) return;
@@ -54,10 +62,15 @@ export default function ChatHistoryItem({
     if (!newTitle || newTitle === localTitle) return;
 
     setLocalTitle(newTitle);
-    await supabase
+    onRename(document.id, newTitle);
+    const { error } = await supabase
       .from("chats")
       .update({ title: newTitle })
       .eq("id", document.id);
+    if (error) {
+      setLocalTitle(document.title);
+      onRename(document.id, document.title);
+    }
   };
 
   const cancelEdit = () => {
@@ -133,7 +146,7 @@ export default function ChatHistoryItem({
                 </DropdownMenuTrigger>
 
                 <DropdownMenuContent
-                  className="w-40"
+                  className="w-40 bg-white/95 backdrop-blur border border-slate-200 shadow-lg"
                   side="right"
                   align="start"
                   sideOffset={8}
