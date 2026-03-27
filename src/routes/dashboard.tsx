@@ -36,6 +36,7 @@ export function Dashboard({ initialChatId }: { initialChatId?: string } = {}) {
     documents,
     isLoading,
     refetch,
+    updateDocumentTitle,
   } = useKnowledgeDocuments(user?.id);
 
   const handleDelete = async (documentId: string) => {
@@ -105,6 +106,7 @@ export function Dashboard({ initialChatId }: { initialChatId?: string } = {}) {
           onSelectChat={handleSelectChat}
           activeChatId={activeChatId ?? undefined}
           onNewChat={handleNewChat}
+          onRenameChat={updateDocumentTitle}
         />
         
         <main className="flex-1 min-h-screen h-screen overflow-hidden">

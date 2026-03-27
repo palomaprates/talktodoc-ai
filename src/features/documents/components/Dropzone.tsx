@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useContext } from "react";
+import { useState, useCallback, useRef, useContext, useEffect } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { AuthContext } from "@/features/auth/AuthContext";
 import { FaFile } from "react-icons/fa";
@@ -9,6 +9,7 @@ import { toast } from "@/lib/toast";
 import type { UploadedTextFile } from "@/types";
 import { uploadDocuments } from "../utils/uploadDocuments";
 import { processFile } from "../utils/processFile";
+import { clearUploadDraft, getUploadDraft, setUploadDraft } from "../store/uploadDraft";
 
 const MAX_FILE_SIZE_MB = 10;
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
@@ -60,10 +61,24 @@ export function Dropzone({
 }) {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
-  const [files, setFiles] = useState<UploadedTextFile[]>([]);
+  const [files, setFiles] = useState<UploadedTextFile[]>(() =>
+    getUploadDraft(user?.id),
+  );
   const [isDragging, setIsDragging] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!user?.id) {
+      setFiles([]);
+      return;
+    }
+    setFiles(getUploadDraft(user.id));
+  }, [user?.id]);
+
+  useEffect(() => {
+    setUploadDraft(user?.id, files);
+  }, [user?.id, files]);
 
   const handleFiles = useCallback(async (fileList: FileList) => {
     const { ok: validFiles, errors } = validateFiles(fileList);
@@ -137,6 +152,7 @@ export function Dropzone({
       const result = await uploadDocuments(files);
       await onUploadSuccess(result.chat_id);
       setFiles([]);
+      clearUploadDraft(user.id);
       toast.success(
         "Arquivos enviados! Você já pode conversar com o documento.",
       );
