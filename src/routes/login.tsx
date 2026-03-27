@@ -50,7 +50,7 @@ function LoginComponent() {
               message: 'text-slate-600',
             },
           }}
-          providers={['google']}
+          providers={[]}
           redirectTo={window.location.origin}
         />
       </div>
