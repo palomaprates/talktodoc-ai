@@ -1,12 +1,12 @@
 import type { ChatWithEntities } from "@/types";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getDocumentsByUser } from "../api";
 
 export function useKnowledgeDocuments(userId: string | undefined) {
   const [chats, setChats] = useState<ChatWithEntities[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  async function fetchChats() {
+  const fetchChats = useCallback(async () => {
     if (!userId) {
       setIsLoading(false);
       return;
@@ -20,11 +20,11 @@ export function useKnowledgeDocuments(userId: string | undefined) {
     } finally {
       setIsLoading(false);
     }
-  }
+  }, [userId]);
 
   useEffect(() => {
     fetchChats();
-  }, [userId]);
+  }, [fetchChats]);
 
   return {
     documents: chats,

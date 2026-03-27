@@ -3,8 +3,15 @@ export function normalizeText(text: string): string {
 
   let cleaned = text;
 
-  // deno-lint-ignore no-control-regex
-  cleaned = cleaned.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]/g, "");
+  cleaned = Array.from(cleaned)
+    .filter((char) => {
+      const code = char.codePointAt(0) ?? 0;
+      if (code === 9 || code === 10 || code === 13) return true;
+      if (code < 32) return false;
+      if (code >= 127 && code <= 159) return false;
+      return true;
+    })
+    .join("");
 
   cleaned = cleaned.replace(/[ \t]+/g, " ");
 

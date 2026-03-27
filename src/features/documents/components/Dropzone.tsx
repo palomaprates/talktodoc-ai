@@ -65,7 +65,7 @@ export function Dropzone({
   const [isLoading, setIsLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFiles = async (fileList: FileList) => {
+  const handleFiles = useCallback(async (fileList: FileList) => {
     const { ok: validFiles, errors } = validateFiles(fileList);
     if (errors.length > 0) {
       errors.forEach((msg) => toast.error(msg));
@@ -91,7 +91,7 @@ export function Dropzone({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [files.length]);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -114,7 +114,7 @@ export function Dropzone({
         await handleFiles(e.dataTransfer.files);
       }
     },
-    [],
+    [handleFiles],
   );
 
   const handleFileClick = () => fileInputRef.current?.click();
@@ -134,7 +134,7 @@ export function Dropzone({
   const handleUpload = async () => {
     if (!user) return;
     try {
-      const result = await uploadDocuments(files, user.id);
+      const result = await uploadDocuments(files);
       await onUploadSuccess(result.chat_id);
       setFiles([]);
       toast.success(

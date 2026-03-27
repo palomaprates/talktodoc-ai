@@ -4,7 +4,7 @@ import { SidebarProvider } from '@/components/ui/sidebar'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Dropzone } from '@/features/documents/components/Dropzone'
 import { useKnowledgeDocuments } from '@/features/documents/hooks/useKnowledgeDocuments'
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useMemo, useState } from 'react'
 import { AuthContext } from '@/features/auth/AuthContext'
 import { deleteDocument } from '@/features/documents/utils/deleteDocument'
 import { ChatViewer } from '@/features/chat/components/ChatViewer'
@@ -60,13 +60,18 @@ export function Dashboard({ initialChatId }: { initialChatId?: string } = {}) {
     }
   };
 
-  useEffect(() => {
-    if (!initialChatId || isLoading) return;
+  const handleNewChat = () => {
+    setSelectedChatId(null);
+    navigate({ to: "/dashboard" });
+  };
+
+  const initialSelectedChatId = useMemo(() => {
+    if (!initialChatId || isLoading) return null;
     const chat = documents.find((d) => d.id === initialChatId);
-    if (chat) {
-      setSelectedChatId(chat.id);
-    }
+    return chat?.id ?? null;
   }, [initialChatId, isLoading, documents]);
+
+  const activeChatId = selectedChatId ?? initialSelectedChatId;
 
   if (isLoading) {
     return (
@@ -98,21 +103,19 @@ export function Dashboard({ initialChatId }: { initialChatId?: string } = {}) {
           documents={documents} 
           onDelete={handleDelete}
           onSelectChat={handleSelectChat}
-          activeChatId={selectedChatId ?? undefined}
+          activeChatId={activeChatId ?? undefined}
+          onNewChat={handleNewChat}
         />
         
-        <main className="flex-1 p-6 md:p-10 flex flex-col gap-8 items-center justify-center">
-          {selectedChatId ? (
+        <main className="flex-1 min-h-screen h-screen overflow-hidden">
+          {activeChatId ? (
             <ChatViewer 
-              chatId={selectedChatId} 
-              documentTitle={documents.find((d) => d.id === selectedChatId)?.title}
-              onBack={() => {
-                setSelectedChatId(null);
-                navigate({ to: "/dashboard" });
-              }}
+              chatId={activeChatId} 
+              documentTitle={documents.find((d) => d.id === activeChatId)?.title}
+              onBack={handleNewChat}
             />
           ) : (
-            <>
+            <div className="p-6 md:p-10 flex flex-col gap-8 items-center justify-center min-h-screen">
               <div className="text-center space-y-4">
                 <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight select-none">
                   Bem-vindo ao TalkToDoc AI
@@ -128,7 +131,7 @@ export function Dashboard({ initialChatId }: { initialChatId?: string } = {}) {
                   setSelectedChatId(chatId);
                 }}/>
               </div>
-            </>
+            </div>
           )}
         </main>
       </div>

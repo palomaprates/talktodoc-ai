@@ -112,22 +112,21 @@ export function ChatViewer({
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-140px)] w-full max-w-4xl mx-auto gap-4">
-      <div className="flex items-center justify-between w-full px-2">
-        <Button
-          variant="ghost"
-          onClick={onBack}
-          className="text-slate-600 hover:text-slate-900"
-        >
-          ← Voltar para Upload
-        </Button>
-        <div className="text-sm font-medium text-slate-700 truncate max-w-[240px]" title={documentTitle ?? chatId}>
-          {documentTitle ?? chatId.split("-")[0]}
+    <div className="flex flex-col h-full min-h-0 w-full p-4 md:p-6">
+      <Card className="flex-1 min-h-0 overflow-hidden flex flex-col bg-white border-violet-100 shadow-xl rounded-2xl">
+        <div className="flex items-center justify-between w-full px-4 md:px-6 py-3 border-b border-slate-100 bg-white/95 backdrop-blur sticky top-0 z-10">
+          <Button
+            variant="ghost"
+            onClick={onBack}
+            className="text-slate-600 hover:text-slate-900"
+          >
+            ← Voltar para Upload
+          </Button>
+          <div className="text-sm font-semibold text-slate-700 truncate max-w-[240px]" title={documentTitle ?? chatId}>
+            {documentTitle ?? chatId.split("-")[0]}
+          </div>
         </div>
-      </div>
-
-      <Card className="flex-1 overflow-hidden flex flex-col bg-white border-violet-100 shadow-xl rounded-2xl">
-        <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4 custom-scrollbar">
+        <div className="flex-1 min-h-0 overflow-y-auto p-4 md:p-6 space-y-4 custom-scrollbar">
           {isFetching ? (
             <div className="flex items-center justify-center h-full text-violet-300">
               <FaSpinner className="animate-spin text-3xl" />
@@ -176,7 +175,7 @@ export function ChatViewer({
                     )}
                   </div>
                   <div
-                    className={`rounded-2xl p-4 text-sm leading-relaxed shadow-sm ${
+                    className={`rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-sm whitespace-pre-wrap break-words ${
                       msg.role === "user"
                         ? "bg-violet-600 text-white rounded-tr-none"
                         : "bg-slate-50 text-slate-800 border border-slate-100 rounded-tl-none"

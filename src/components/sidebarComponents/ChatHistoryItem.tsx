@@ -45,7 +45,7 @@ export default function ChatHistoryItem({
       selection.removeAllRanges();
       selection.addRange(range);
     }
-  }, [isEditing]); 
+  }, [isEditing, localTitle]); 
 
   const commitEdit = async () => {
     const newTitle = spanRef.current?.textContent?.trim() ?? "";
@@ -67,21 +67,21 @@ export default function ChatHistoryItem({
 
   return (
     <SidebarMenuItem>
-      <div className="relative group w-full px-1.5 py-0.5">
+      <div className="relative group w-full py-0.5">
         <SidebarMenuButton
           asChild
           className="w-full h-auto p-0 hover:bg-transparent cursor-pointer"
         >
           <div
             onClick={() => !isEditing && onSelectChat(document.id)}
-            className={`w-full rounded-xl border p-3.5 shadow-sm transition-all duration-200 flex flex-col gap-2 hover:border-violet-300 hover:shadow-md ${
+            className={`w-full rounded-xl border p-4 shadow-sm transition-all duration-200 flex flex-col gap-2 hover:border-violet-300 hover:shadow-md ${
               isActive
                 ? "border-violet-400 bg-violet-50/80 ring-2 ring-violet-500/15 shadow-md"
                 : "border-slate-200 bg-white"
             }`}
           >
             <div className="flex justify-between items-start gap-2">
-              <div className="flex-1 min-w-0 justify-start items-start ml-4">
+              <div className="flex flex-col flex-1 min-w-0 justify-start items-start w-[150px]">
                 <span
                   ref={spanRef}
                   contentEditable={isEditing}
@@ -90,6 +90,7 @@ export default function ChatHistoryItem({
                   onClick={(e) => isEditing && e.stopPropagation()}
                   tabIndex={isEditing ? 0 : -1}
                   onBlur={commitEdit}
+                  title={!isEditing ? localTitle : undefined}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
                       e.preventDefault();
@@ -98,10 +99,10 @@ export default function ChatHistoryItem({
                       cancelEdit();
                     }
                   }}
-                  className={`block text-lg sm:text-sm font-semibold text-slate-800 break-words truncate ${
+                  className={`block w-full text-sm font-semibold text-slate-800 leading-snug ${
                     isEditing
                       ? "border-2 border-violet-400 bg-violet-50 rounded px-1 py-0.5 outline-none"
-                      : ""
+                      : "truncate"
                   }`}
                 >
                   {!isEditing && localTitle}
