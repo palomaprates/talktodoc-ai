@@ -10,6 +10,7 @@ type UploadResult = {
 export async function uploadDocuments(
   files: UploadedTextFile[],
 ): Promise<UploadResult> {
+  
   if (!files.length) {
     throw new Error("No files to upload");
   }

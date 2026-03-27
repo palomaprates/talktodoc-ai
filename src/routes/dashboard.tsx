@@ -73,8 +73,7 @@ export function Dashboard({ initialChatId }: { initialChatId?: string } = {}) {
   }, [initialChatId, isLoading, documents]);
 
   const activeChatId = selectedChatId ?? initialSelectedChatId;
-  console.log("ANON KEY: ", import.meta.env.VITE_SUPABASE_ANON_KEY);
-  console.log("URL: ", import.meta.env.VITE_SUPABASE_URL);
+
   if (isLoading) {
     return (
       <SidebarProvider>
