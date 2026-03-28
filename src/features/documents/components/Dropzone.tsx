@@ -10,7 +10,6 @@ import type { UploadedTextFile } from "@/types";
 import { uploadDocuments } from "../utils/uploadDocuments";
 import { processFile } from "../utils/processFile";
 import { clearUploadDraft, getUploadDraft, setUploadDraft } from "../store/uploadDraft";
-import { supabase } from "@/lib/supabase";
 
 const MAX_FILE_SIZE_MB = 10;
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
@@ -150,11 +149,6 @@ export function Dropzone({
   const handleUpload = async () => {
     if (!user) return;
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-
-console.log("SESSION:", session);
-console.log("TOKEN:", session?.access_token);
-console.log("URL:", import.meta.env.VITE_SUPABASE_URL);
       const result = await uploadDocuments(files);
       await onUploadSuccess(result.chat_id);
       setFiles([]);
