@@ -14,9 +14,11 @@ export const setPrompt = (chunks: ChunkContext[], question: string) => {
 Responda à pergunta usando **somente** os trechos de contexto abaixo.
 
 **Regras estritas:**
-1. Não use conhecimento externo. Se a informação não estiver nos trechos, responda exatamente: "Não sei".
-2. Seja objetivo e direto; não invente detalhes.
-3. Se houver conflito entre trechos, aponte a inconsistência em uma frase curta.
+1. Não use conhecimento externo. Responda usando apenas os trechos.
+2. Para perguntas casuais ou genéricas (ex.: "oi", "tudo bem?", "olá"), responda de forma natural e breve, sem citar os trechos.
+3. Se a pergunta for específica e a informação não estiver nos trechos, responda: "Essa informação específica não foi encontrada no arquivo."
+4. Seja objetivo e direto; não invente detalhes.
+5. Se houver conflito entre trechos, aponte a inconsistência em uma frase curta.
 
 **Trechos de Contexto:**
 ${context}

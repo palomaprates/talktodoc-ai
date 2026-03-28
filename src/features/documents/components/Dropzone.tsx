@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef, useContext, useEffect } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { AuthContext } from "@/features/auth/AuthContext";
-import { FaFile } from "react-icons/fa";
+import { FaFile, FaSpinner } from "react-icons/fa";
 import { TbTrash } from "react-icons/tb";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -66,6 +66,7 @@ export function Dropzone({
   );
   const [isDragging, setIsDragging] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -147,7 +148,8 @@ export function Dropzone({
   };
 
   const handleUpload = async () => {
-    if (!user) return;
+    if (!user || isUploading) return;
+    setIsUploading(true);
     try {
       const result = await uploadDocuments(files);
       await onUploadSuccess(result.chat_id);
@@ -160,6 +162,8 @@ export function Dropzone({
     } catch (err) {
       console.error(err);
       toast.error("Falha ao enviar arquivos. Tente novamente.");
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -274,10 +278,17 @@ export function Dropzone({
               <div className="flex justify-center w-full pt-4">
                 <Button
                   onClick={() => user?.id && handleUpload()}
-                  className="bg-violet-500 hover:bg-violet-600 text-white rounded-full px-8 py-3 text-sm md:text-base font-semibold shadow-md transition-transform duration-200 hover:scale-105 disabled:opacity-60 disabled:hover:scale-100 cursor-pointer"
-                  disabled={!user || isLoading}
+                  className="bg-violet-500 hover:bg-violet-600 text-white rounded-full px-8 py-3 text-sm md:text-base font-semibold shadow-md transition-transform duration-200 hover:scale-105 disabled:opacity-60 disabled:hover:scale-100 cursor-pointer select-none"
+                  disabled={!user || isLoading || isUploading}
                 >
-                  {isLoading ? "Enviando…" : "Enviar arquivos"}
+                  {isUploading ? (
+                    <span className="inline-flex items-center gap-2">
+                      <FaSpinner className="size-4 animate-spin" />
+                      Enviando…
+                    </span>
+                  ) : (
+                    "Enviar arquivos"
+                  )}
                 </Button>
               </div>
             </>

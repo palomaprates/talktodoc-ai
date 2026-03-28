@@ -181,22 +181,19 @@ export function ChatViewer({
                         : "bg-slate-50 text-slate-800 border border-slate-100 rounded-tl-none"
                     }`}
                   >
-                    {msg.content}
+                    {msg.role === "assistant" && msg.content.trim().length === 0 && isLoading ? (
+                      <span className="inline-flex gap-1">
+                        <span className="w-1.5 h-1.5 bg-violet-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
+                        <span className="w-1.5 h-1.5 bg-violet-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
+                        <span className="w-1.5 h-1.5 bg-violet-400 rounded-full animate-bounce" />
+                      </span>
+                    ) : (
+                      msg.content
+                    )}
                   </div>
                 </div>
               </div>
             ))
-          )}
-          {isLoading && (
-            <div className="flex justify-start">
-              <div className="bg-slate-50 border border-slate-100 rounded-2xl rounded-tl-none p-4 shadow-sm">
-                <div className="flex gap-1">
-                  <span className="w-1.5 h-1.5 bg-violet-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
-                  <span className="w-1.5 h-1.5 bg-violet-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
-                  <span className="w-1.5 h-1.5 bg-violet-400 rounded-full animate-bounce" />
-                </div>
-              </div>
-            </div>
           )}
           <div ref={messagesEndRef} />
         </div>

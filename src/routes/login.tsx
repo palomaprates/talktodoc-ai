@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
 import { Auth } from '@supabase/auth-ui-react'
 import { ThemeSupa } from '@supabase/auth-ui-shared'
 import { supabase } from '../lib/supabase'
@@ -6,6 +6,14 @@ import { useContext, useEffect } from 'react'
 import { AuthContext } from '@/features/auth/AuthContext'
 
 export const Route = createFileRoute('/login')({
+  beforeLoad: ({ context }) => {
+    const { user, isLoading } = context.auth;
+
+    if (isLoading) return;
+    if (user) {
+      throw redirect({ to: "/dashboard" });
+    }
+  },
   component: LoginComponent,
 })
 
