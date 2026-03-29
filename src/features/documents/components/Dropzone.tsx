@@ -31,7 +31,7 @@ function validateFiles(fileList: FileList): { ok: File[]; errors: string[] } {
   const valid: File[] = [];
 
   if (files.length > MAX_FILES) {
-    errors.push(`Máximo de ${MAX_FILES} arquivos por vez.`);
+    errors.push(`Maximum of ${MAX_FILES} files at a time.`);
     return { ok: [], errors };
   }
 
@@ -40,12 +40,12 @@ function validateFiles(fileList: FileList): { ok: File[]; errors: string[] } {
     const allowed =
       ALLOWED_TYPES.includes(ext) || ALLOWED_MIMES.includes(file.type);
     if (!allowed) {
-      errors.push(`"${file.name}": apenas PDF e TXT são permitidos.`);
+      errors.push(`"${file.name}": only PDF and TXT files are allowed.`);
       continue;
     }
     if (file.size > MAX_FILE_SIZE_BYTES) {
       errors.push(
-        `"${file.name}": tamanho máximo ${MAX_FILE_SIZE_MB} MB.`,
+        `"${file.name}": maximum size is ${MAX_FILE_SIZE_MB} MB.`,
       );
       continue;
     }
@@ -91,7 +91,7 @@ export function Dropzone({
 
     const totalAfter = files.length + validFiles.length;
     if (totalAfter > MAX_FILES) {
-      toast.error(`Máximo de ${MAX_FILES} arquivos. Remova alguns ou envie em lotes menores.`);
+      toast.error(`Maximum of ${MAX_FILES} files. Remove some or upload in smaller batches.`);
       return;
     }
 
@@ -102,7 +102,7 @@ export function Dropzone({
     } catch (error) {
       console.error("Error processing files:", error);
       toast.error(
-        "Erro ao processar arquivos. Verifique os tipos (PDF ou TXT) e tente novamente.",
+        "Error processing files. Check the types (PDF or TXT) and try again.",
       );
     } finally {
       setIsLoading(false);
@@ -156,12 +156,12 @@ export function Dropzone({
       setFiles([]);
       clearUploadDraft(user.id);
       toast.success(
-        "Arquivos enviados! Você já pode conversar com o documento.",
+        "Files uploaded! You can now chat with the document.",
       );
       navigate({ to: "/dashboard/$chatId", params: { chatId: result.chat_id } });
     } catch (err) {
       console.error(err);
-      toast.error("Falha ao enviar arquivos. Tente novamente.");
+      toast.error("Failed to upload files. Please try again.");
     } finally {
       setIsUploading(false);
     }
@@ -218,11 +218,11 @@ export function Dropzone({
             </div>
             <h3 className="text-lg sm:text-xl font-semibold text-slate-800 mb-1">
               {isDragging
-                ? "Solte os arquivos aqui"
-                : "Arraste arquivos ou clique para enviar"}
+                ? "Drop the files here"
+                : "Drag files or click to upload"}
             </h3>
             <p className="text-xs sm:text-sm text-slate-500 max-w-md">
-              PDF ou TXT, até {MAX_FILE_SIZE_MB} MB cada. Máx. {MAX_FILES} arquivos.
+              PDF or TXT, up to {MAX_FILE_SIZE_MB} MB each. Max {MAX_FILES} files.
             </p>
           </div>
 
@@ -231,14 +231,14 @@ export function Dropzone({
               <div className="bg-white/90 rounded-xl border border-slate-200 shadow-sm overflow-hidden backdrop-blur-sm transition-all duration-500 overflow-y-auto max-h-64 custom-scrollbar">
                 <div className="p-3 md:p-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center sticky top-0 z-10 backdrop-blur-md">
                   <h4 className="font-medium text-sm text-slate-700">
-                    Arquivos selecionados ({files.length})
+                    Selected files ({files.length})
                   </h4>
                   <button
                     type="button"
                     onClick={() => setFiles([])}
                     className="text-[11px] md:text-xs text-slate-500 hover:text-red-500 hover:bg-red-50 rounded-full px-2 py-1 transition-colors uppercase tracking-wider font-semibold cursor-pointer"
                   >
-                    Limpar tudo
+                    Clear all
                   </button>
                 </div>
                 <ul className="divide-y divide-slate-100 custom-scrollbar select-none">
@@ -284,10 +284,10 @@ export function Dropzone({
                   {isUploading ? (
                     <span className="inline-flex items-center gap-2">
                       <FaSpinner className="size-4 animate-spin" />
-                      Enviando…
+                      Uploading…
                     </span>
                   ) : (
-                    "Enviar arquivos"
+                    "Upload files"
                   )}
                 </Button>
               </div>

@@ -26,7 +26,7 @@ function Index() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <div className="text-slate-500">Carregando…</div>
+        <div className="text-slate-500">Loading…</div>
       </div>
     );
   }

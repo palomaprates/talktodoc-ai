@@ -8,8 +8,8 @@ import { supabase } from "@/lib/supabase";
 
 export function NavUser() {
     const { user, isLoading } = useContext(AuthContext);
-    if (isLoading) return <p>Carregando...</p>;
-    if (!user) return <p>Nenhum usuário logado.</p>;
+    if (isLoading) return <p>Loading...</p>;
+    if (!user) return <p>No user logged in.</p>;
     const emailInitial = (user?.email ?? "").trim().charAt(0).toUpperCase() || "?";
     async function handleLogout() {
     await supabase.auth.signOut();

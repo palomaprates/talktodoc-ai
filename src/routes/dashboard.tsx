@@ -46,10 +46,10 @@ export function Dashboard({ initialChatId }: { initialChatId?: string } = {}) {
         setSelectedChatId(null);
       }
       await refetch();
-      toast.success("Documento removido.");
+      toast.success("Document removed.");
     } catch (err) {
       console.error(err);
-      toast.error("Não foi possível remover o documento.");
+      toast.error("Unable to remove the document.");
     }
   };
 
@@ -134,10 +134,10 @@ export function Dashboard({ initialChatId }: { initialChatId?: string } = {}) {
               </div>
               <div className="text-center space-y-4">
                 <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight select-none">
-                  Bem-vindo ao TalkToDoc AI
+                  Welcome to TalkToDoc AI
                 </h2>
                 <p className="text-slate-500 max-w-md mx-auto select-none">
-                  Suba seus PDFs ou arquivos de texto para começar a interagir com seus documentos de forma inteligente.
+                  Upload your PDFs or text files to start interacting with your documents intelligently.
                 </p>
               </div>
               

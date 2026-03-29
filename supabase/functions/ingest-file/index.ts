@@ -12,9 +12,9 @@ type IncomingFile = {
 };
 
 function buildChatTitle(files: IncomingFile[]) {
-  if (!files.length) return "Novo chat";
+  if (!files.length) return "New chat";
   if (files.length === 1) return files[0].fileName;
-  return `${files[0].fileName} (+${files.length - 1} arquivos)`;
+  return `${files[0].fileName} (+${files.length - 1} files)`;
 }
 
 Deno.serve(async (req) => {
@@ -172,7 +172,7 @@ Deno.serve(async (req) => {
     console.error("Ingestion error:", errorMessage);
     return new Response(
       JSON.stringify({
-        error: "Erro ao processar o arquivo",
+        error: "Error processing file",
         details: errorMessage,
       }),
       {

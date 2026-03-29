@@ -9,9 +9,9 @@ import { toast } from "@/lib/toast";
 import type { Message } from "@/types";
 
 const QUICK_PROMPTS = [
-  "Faça um resumo deste documento.",
-  "Quais são os principais pontos?",
-  "Há alguma contradição ou inconsistência?",
+  "Summarize this document.",
+  "What are the main points?",
+  "Is there any contradiction or inconsistency?",
 ];
 
 interface ChatViewerProps {
@@ -94,7 +94,7 @@ export function ChatViewer({
       );
     } catch (error) {
       console.error("Error in chat flow:", error);
-      toast.error("Erro ao enviar mensagem. Tente novamente.");
+      toast.error("Error sending message. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -123,7 +123,7 @@ export function ChatViewer({
               onClick={onBack}
               className="text-slate-600 hover:text-slate-900"
             >
-              ← Voltar para Upload
+              ← Back to Upload
             </Button>
           </div>
           <div
@@ -141,7 +141,7 @@ export function ChatViewer({
           ) : messages.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-slate-400 space-y-4">
               <FaRobot className="text-4xl opacity-20" />
-              <p>Pergunte qualquer coisa sobre este documento!</p>
+              <p>Ask anything about this document!</p>
               <div className="flex flex-wrap gap-2 justify-center">
                 {QUICK_PROMPTS.map((prompt) => (
                   <button
@@ -214,7 +214,7 @@ export function ChatViewer({
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Digite sua dúvida…"
+              placeholder="Type your question…"
               rows={1}
               className="w-full min-h-[44px] max-h-32 resize-y bg-white border border-slate-200 rounded-2xl py-3 px-6 pr-12 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all shadow-inner"
               disabled={isLoading || isFetching}
@@ -228,7 +228,7 @@ export function ChatViewer({
             </button>
           </form>
           <p className="text-[10px] text-center text-slate-400 mt-2">
-            Resposta gerada por IA com base apenas no seu documento.
+            AI-generated response based only on your document.
           </p>
         </div>
       </Card>

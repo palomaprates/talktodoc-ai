@@ -159,7 +159,7 @@ export default function ChatHistoryItem({
                     }}
                   >
                     <TbPencil className="size-3.5" />
-                    <span className="text-xs font-medium">Renomear</span>
+                    <span className="text-xs font-medium">Rename</span>
                   </DropdownMenuItem>
 
                   <DropdownMenuSeparator />
@@ -172,14 +172,14 @@ export default function ChatHistoryItem({
                     className="flex items-center gap-2 cursor-pointer text-red-500 focus:bg-red-50 focus:text-red-600"
                   >
                     <Trash2 className="size-3.5" />
-                    <span className="text-xs font-medium">Excluir</span>
+                    <span className="text-xs font-medium">Delete</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
 
             <p className="text-[11px] sm:text-xs text-slate-500 line-clamp-2 leading-relaxed">
-              {firstFile?.clean_content || "Nenhum arquivo processado"}
+              {firstFile?.clean_content || "No file processed yet."}
             </p>
           </div>
         </SidebarMenuButton>
