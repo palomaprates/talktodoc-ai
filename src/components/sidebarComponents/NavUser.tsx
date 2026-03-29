@@ -10,6 +10,7 @@ export function NavUser() {
     const { user, isLoading } = useContext(AuthContext);
     if (isLoading) return <p>Carregando...</p>;
     if (!user) return <p>Nenhum usuário logado.</p>;
+    const emailInitial = (user?.email ?? "").trim().charAt(0).toUpperCase() || "?";
     async function handleLogout() {
     await supabase.auth.signOut();
     window.location.href = "/login";
@@ -28,7 +29,7 @@ export function NavUser() {
                   src={user?.user_metadata?.avatar_url}
                   alt={user?.user_metadata?.name}
                   />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                <AvatarFallback className="rounded-lg">{emailInitial}</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">
@@ -51,7 +52,7 @@ export function NavUser() {
                     src={user?.user_metadata?.avatar_url}
                     alt="avatar"
                     />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  <AvatarFallback className="rounded-lg">{emailInitial}</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">
