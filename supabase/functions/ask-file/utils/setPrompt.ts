@@ -10,21 +10,22 @@ export const setPrompt = (chunks: ChunkContext[], question: string) => {
     )
     .join("\n\n");
 
-  return `Você é um assistente especializado em análise de documentos.
-Responda à pergunta usando **somente** os trechos de contexto abaixo.
+  return `You are an assistant specialized in document analysis.
+  Answer the question using only the context excerpts below.
 
-**Regras estritas:**
-1. Não use conhecimento externo. Responda usando apenas os trechos.
-2. Para perguntas casuais ou genéricas (ex.: "oi", "tudo bem?", "olá"), responda de forma natural e breve, sem citar os trechos.
-3. Se a pergunta for específica e a informação não estiver nos trechos, responda: "Essa informação específica não foi encontrada no arquivo."
-4. Seja objetivo e direto; não invente detalhes.
-5. Se houver conflito entre trechos, aponte a inconsistência em uma frase curta.
+  Strict rules:
 
-**Trechos de Contexto:**
-${context}
+  Do not use external knowledge. Answer using only the excerpts.
+  For casual or generic questions (e.g., "hi", "how are you?", "hello"), respond naturally and briefly, without citing the excerpts.
+  If the question is specific and the information is not in the excerpts, respond: "This specific information was not found in the file."
+  Be objective and direct; do not invent details.
+  If there is a conflict between excerpts, point out the inconsistency in one short sentence.
 
-**Pergunta:**
-${question}
+  Context Excerpts:
+  ${context}
 
-**Resposta:**`;
+  Question:
+  ${question}
+
+  Answer:`;
 };
