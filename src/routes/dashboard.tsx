@@ -1,6 +1,6 @@
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
 import { AppSidebar } from '@/components/sidebarComponents/AppSidebar'
-import { SidebarProvider } from '@/components/ui/sidebar'
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Dropzone } from '@/features/documents/components/Dropzone'
 import { useKnowledgeDocuments } from '@/features/documents/hooks/useKnowledgeDocuments'
@@ -78,7 +78,7 @@ export function Dashboard({ initialChatId }: { initialChatId?: string } = {}) {
     return (
       <SidebarProvider>
         <div className="flex w-full min-h-screen bg-violet-50">
-          <aside className="w-64 border-r border-slate-200 bg-white flex flex-col">
+          <aside className="hidden md:flex w-64 border-r border-slate-200 bg-white flex-col">
             <Skeleton className="h-16 m-4 w-32" />
             <div className="flex-1 p-4 space-y-3">
               <Skeleton className="h-4 w-24" />
@@ -87,7 +87,12 @@ export function Dashboard({ initialChatId }: { initialChatId?: string } = {}) {
               <Skeleton className="h-10 w-full rounded-md" />
             </div>
           </aside>
-          <main className="flex-1 p-6 md:p-10 flex flex-col gap-8 items-center justify-center">
+          <main className="flex-1 p-4 sm:p-6 md:p-10 flex flex-col gap-6 md:gap-8 items-center justify-center">
+            <div className="w-full flex items-center justify-between md:hidden">
+              <SidebarTrigger className="text-slate-600" />
+              <span className="text-sm font-semibold text-slate-700">TalkToDoc AI</span>
+              <div className="w-7" />
+            </div>
             <Skeleton className="h-10 w-64" />
             <Skeleton className="h-5 w-80" />
             <Skeleton className="h-[400px] w-full max-w-2xl rounded-2xl" />
@@ -109,7 +114,11 @@ export function Dashboard({ initialChatId }: { initialChatId?: string } = {}) {
           onRenameChat={updateDocumentTitle}
         />
         
-        <main className="flex-1 min-h-screen h-screen overflow-hidden">
+        <main
+          className={`flex-1 min-h-svh h-svh ${
+            activeChatId ? "overflow-hidden" : "overflow-y-auto"
+          }`}
+        >
           {activeChatId ? (
             <ChatViewer 
               chatId={activeChatId} 
@@ -117,7 +126,12 @@ export function Dashboard({ initialChatId }: { initialChatId?: string } = {}) {
               onBack={handleNewChat}
             />
           ) : (
-            <div className="p-6 md:p-10 flex flex-col gap-8 items-center justify-center min-h-screen">
+            <div className="p-4 sm:p-6 md:p-10 flex flex-col gap-6 md:gap-8 items-center justify-center min-h-svh">
+              <div className="w-full flex items-center justify-between md:hidden">
+                <SidebarTrigger className="text-slate-600" />
+                <span className="text-sm font-semibold text-slate-700">TalkToDoc AI</span>
+                <div className="w-7" />
+              </div>
               <div className="text-center space-y-4">
                 <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight select-none">
                   Bem-vindo ao TalkToDoc AI

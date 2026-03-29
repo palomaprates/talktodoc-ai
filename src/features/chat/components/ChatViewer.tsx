@@ -3,6 +3,7 @@ import { askFile } from "../services/askFile";
 import { getMessages, insertMessage } from "../api";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import { FaRobot, FaUser, FaPaperPlane, FaSpinner } from "react-icons/fa";
 import { toast } from "@/lib/toast";
 import type { Message } from "@/types";
@@ -115,14 +116,20 @@ export function ChatViewer({
     <div className="flex flex-col h-full min-h-0 w-full p-4 md:p-6">
       <Card className="flex-1 min-h-0 overflow-hidden flex flex-col bg-white border-violet-100 shadow-xl rounded-2xl">
         <div className="flex items-center justify-between w-full px-4 md:px-6 py-3 border-b border-slate-100 bg-white/95 backdrop-blur sticky top-0 z-10">
-          <Button
-            variant="ghost"
-            onClick={onBack}
-            className="text-slate-600 hover:text-slate-900"
+          <div className="flex items-center gap-2">
+            <SidebarTrigger className="text-slate-600 md:hidden" />
+            <Button
+              variant="ghost"
+              onClick={onBack}
+              className="text-slate-600 hover:text-slate-900"
+            >
+              ← Voltar para Upload
+            </Button>
+          </div>
+          <div
+            className="text-sm font-semibold text-slate-700 truncate max-w-[140px] sm:max-w-[200px] md:max-w-[240px]"
+            title={documentTitle ?? chatId}
           >
-            ← Voltar para Upload
-          </Button>
-          <div className="text-sm font-semibold text-slate-700 truncate max-w-[240px]" title={documentTitle ?? chatId}>
             {documentTitle ?? chatId.split("-")[0]}
           </div>
         </div>
