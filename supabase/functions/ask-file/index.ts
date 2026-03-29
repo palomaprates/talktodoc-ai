@@ -89,14 +89,8 @@ Deno.serve(async (req) => {
     const stream = new ReadableStream<Uint8Array>({
       start: async (controller) => {
         try {
-          if (!chunks || chunks.length === 0) {
-            await streamText(controller, "Não sei");
-            sendEvent(controller, "[DONE]");
-            controller.close();
-            return;
-          }
-
-          const prompt = setPrompt(chunks, question);
+          const safeChunks = Array.isArray(chunks) ? chunks : [];
+          const prompt = setPrompt(safeChunks, question);
           const aiResponse = await askAI(prompt);
 
           await streamText(controller, aiResponse);
