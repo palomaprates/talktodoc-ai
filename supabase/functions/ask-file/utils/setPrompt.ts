@@ -21,6 +21,7 @@ export const setPrompt = (chunks: ChunkContext[], question: string) => {
   Be objective and direct; do not invent details.
   If there is a conflict between excerpts, point out the inconsistency in one short sentence.
   The answer must be in the same language as the question.
+  Always match the question's language exactly. If the question is in English, answer in English. If in Portuguese, answer in Portuguese.
   
   Context Excerpts:
   ${context}
