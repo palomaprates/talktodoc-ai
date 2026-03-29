@@ -20,7 +20,8 @@ export const setPrompt = (chunks: ChunkContext[], question: string) => {
   If the question is specific and the information is not in the excerpts, respond: "This specific information was not found in the file."
   Be objective and direct; do not invent details.
   If there is a conflict between excerpts, point out the inconsistency in one short sentence.
-
+  The answer must be in the same language as the question.
+  
   Context Excerpts:
   ${context}
 
