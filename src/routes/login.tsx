@@ -53,7 +53,7 @@ function LoginComponent() {
               input:
                 'rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500',
               button:
-                'w-full inline-flex items-center justify-center bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-3 px-6 rounded-full text-lg shadow-lg transition-transform hover:scale-[1.02]',
+                'w-full inline-flex items-center justify-center bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-3 px-6 rounded-full text-lg shadow-lg transition-transform hover:scale-[1.02] cursor-pointer',
               anchor: 'text-blue-600 hover:underline',
               message: 'text-slate-600',
             },

@@ -236,7 +236,7 @@ export function Dropzone({
                   <button
                     type="button"
                     onClick={() => setFiles([])}
-                    className="text-[11px] md:text-xs text-slate-500 hover:text-red-500 hover:bg-red-50 rounded-full px-2 py-1 transition-colors uppercase tracking-wider font-semibold"
+                    className="text-[11px] md:text-xs text-slate-500 hover:text-red-500 hover:bg-red-50 rounded-full px-2 py-1 transition-colors uppercase tracking-wider font-semibold cursor-pointer"
                   >
                     Limpar tudo
                   </button>

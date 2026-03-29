@@ -87,7 +87,7 @@ export default function ChatHistoryItem({
         >
           <div
             onClick={() => !isEditing && onSelectChat(document.id)}
-            className={`w-full rounded-xl border p-4 shadow-sm transition-all duration-200 flex flex-col gap-2 hover:border-violet-300 hover:shadow-md ${
+            className={`w-full rounded-xl border p-4 shadow-sm transition-all duration-200 flex flex-col gap-2 hover:border-violet-300 hover:shadow-md cursor-pointer ${
               isActive
                 ? "border-violet-400 bg-violet-50/80 ring-2 ring-violet-500/15 shadow-md"
                 : "border-slate-200 bg-white"
@@ -136,7 +136,7 @@ export default function ChatHistoryItem({
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button
-                    className={`p-1 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-opacity ${
+                    className={`p-1 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-opacity cursor-pointer ${
                       isActive ? "opacity-100" : "opacity-0 group-hover:opacity-100"
                     }`}
                     onClick={(e) => e.stopPropagation()}
