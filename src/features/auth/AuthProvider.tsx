@@ -14,6 +14,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setSession(session);
       setUser(session?.user ?? null);
 
+      if (!session?.user?.id) {
+        setIsLoading(false);
+        return;
+      }
+
       const { data: userInDb } = await supabase
         .from("users")
         .select("*")
