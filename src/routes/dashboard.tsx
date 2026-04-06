@@ -122,6 +122,7 @@ export function Dashboard({ initialChatId }: { initialChatId?: string } = {}) {
           {activeChatId ? (
             <ChatViewer 
               chatId={activeChatId} 
+              fileId={documents.find((d) => d.id === activeChatId)?.files?.[0]?.id}
               documentTitle={documents.find((d) => d.id === activeChatId)?.title}
               onBack={handleNewChat}
             />

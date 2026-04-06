@@ -16,12 +16,14 @@ const QUICK_PROMPTS = [
 
 interface ChatViewerProps {
   chatId: string;
+  fileId?: string;
   documentTitle?: string;
   onBack: () => void;
 }
 
 export function ChatViewer({
   chatId,
+  fileId,
   documentTitle,
   onBack,
 }: ChatViewerProps) {
@@ -79,7 +81,7 @@ export function ChatViewer({
       ]);
 
       let finalAnswer = "";
-      await askFile(chatId, currentInput, (token) => {
+      await askFile(chatId, currentInput, fileId, (token) => {
         finalAnswer += token;
         setMessages((prev) =>
           prev.map((msg) =>

@@ -8,6 +8,7 @@ type TokenHandler = (token: string) => void;
 export async function askFile(
   chatId: string,
   question: string,
+  fileId?: string,
   onToken?: TokenHandler,
 ): Promise<string> {
   if (!supabaseUrl || !supabaseAnonKey) {
@@ -24,7 +25,7 @@ export async function askFile(
       apikey: supabaseAnonKey,
       Authorization: accessToken ? `Bearer ${accessToken}` : "",
     },
-    body: JSON.stringify({ chat_id: chatId, question }),
+    body: JSON.stringify({ chat_id: chatId, file_id: fileId, question }),
   });
 
   if (!response.ok) {
