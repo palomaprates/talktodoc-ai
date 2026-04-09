@@ -30,8 +30,7 @@ export async function askFile(
     },
     body: JSON.stringify({ chat_id: chatId, file_id: fileId, question }),
   });
-  console.log("supabase url prod", supabaseUrl);
-  console.log("body", response.body);
+
   if (!response.ok) {
     const errorText = await response.text();
     throw new Error(`ask-file failed: ${errorText}`);
@@ -77,6 +76,5 @@ export async function askFile(
       }
     }
   }
-  console.log("fulltext", fullText);
   return fullText;
 }
