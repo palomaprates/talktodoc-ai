@@ -9,7 +9,6 @@ import { AuthContext } from '@/features/auth/AuthContext'
 import { deleteDocument } from '@/features/documents/utils/deleteDocument'
 import { ChatViewer } from '@/features/chat/components/ChatViewer'
 import { toast } from '@/lib/toast'
-import { supabase } from '@/lib/supabase'
 
 export const Route = createFileRoute('/dashboard')({
   beforeLoad: ({ context }) => {
