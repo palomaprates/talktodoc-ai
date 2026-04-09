@@ -32,8 +32,6 @@ export function Dashboard({ initialChatId }: { initialChatId?: string } = {}) {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
-  const session = supabase.auth.getUser();
-  console.log("session", session);
   const {
     documents,
     isLoading,

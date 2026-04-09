@@ -17,17 +17,21 @@ export async function askFile(
 
   const { data: { session } } = await supabase.auth.getSession();
   const accessToken = session?.access_token;
+  if (!accessToken) {
+    throw new Error("Missing auth token. Please sign in again.");
+  }
 
   const response = await fetch(`${supabaseUrl}/functions/v1/ask-file`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       apikey: supabaseAnonKey,
-      Authorization: accessToken ? `Bearer ${accessToken}` : "",
+      Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify({ chat_id: chatId, file_id: fileId, question }),
   });
-
+  console.log("supabase url prod", supabaseUrl);
+  console.log("body", response.body);
   if (!response.ok) {
     const errorText = await response.text();
     throw new Error(`ask-file failed: ${errorText}`);
@@ -73,6 +77,6 @@ export async function askFile(
       }
     }
   }
-
+  console.log("fulltext", fullText);
   return fullText;
 }

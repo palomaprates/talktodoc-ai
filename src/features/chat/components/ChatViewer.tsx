@@ -94,6 +94,9 @@ export function ChatViewer({
       setMessages((prev) =>
         prev.map((msg) => (msg.id === tempId ? aiMsg : msg))
       );
+
+      console.log("aiMSG", aiMsg);
+      console.log("setMessages res", messages);
     } catch (error) {
       console.error("Error in chat flow:", error);
       toast.error("Error sending message. Please try again.");
