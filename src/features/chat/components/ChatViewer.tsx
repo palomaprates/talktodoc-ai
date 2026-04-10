@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import type { ReactNode } from "react";
 import { askFile } from "../services/askFile";
 import { getMessages, insertMessage } from "../api";
 import { Button } from "@/components/ui/button";
@@ -114,6 +115,84 @@ export function ChatViewer({
     void sendMessage();
   };
 
+  const renderMessageContent = (content: string): ReactNode => {
+    const lines = content.split(/\r?\n/);
+    const nodes: ReactNode[] = [];
+    let paragraphLines: string[] = [];
+    let listItems: string[] = [];
+    let listType: "ul" | "ol" | null = null;
+    let nodeKey = 0;
+
+    const flushParagraph = () => {
+      if (paragraphLines.length === 0) return;
+      const text = paragraphLines.join("\n").trim();
+      if (text.length > 0) {
+        nodes.push(
+          <p key={`p-${nodeKey++}`} className="whitespace-pre-line">
+            {text}
+          </p>
+        );
+      }
+      paragraphLines = [];
+    };
+
+    const flushList = () => {
+      if (listItems.length === 0 || !listType) return;
+      const items = listItems.map((item, index) => (
+        <li key={`li-${nodeKey++}-${index}`}>{item}</li>
+      ));
+      nodes.push(
+        listType === "ol" ? (
+          <ol key={`ol-${nodeKey++}`} className="list-decimal pl-5 space-y-1">
+            {items}
+          </ol>
+        ) : (
+          <ul key={`ul-${nodeKey++}`} className="list-disc pl-5 space-y-1">
+            {items}
+          </ul>
+        )
+      );
+      listItems = [];
+      listType = null;
+    };
+
+    for (const rawLine of lines) {
+      const line = rawLine.trim();
+      if (line.length === 0) {
+        flushParagraph();
+        flushList();
+        continue;
+      }
+
+      const unorderedMatch = line.match(/^[-*•]\s+(.*)$/);
+      const orderedMatch = line.match(/^\d+\.\s+(.*)$/);
+      if (unorderedMatch || orderedMatch) {
+        flushParagraph();
+        const nextType: "ul" | "ol" = orderedMatch ? "ol" : "ul";
+        if (listType && listType !== nextType) {
+          flushList();
+        }
+        listType = nextType;
+        listItems.push((unorderedMatch?.[1] ?? orderedMatch?.[1] ?? "").trim());
+        continue;
+      }
+
+      if (listType) {
+        flushList();
+      }
+      paragraphLines.push(line);
+    }
+
+    flushParagraph();
+    flushList();
+
+    if (nodes.length === 0) {
+      return content;
+    }
+
+    return <div className="space-y-2">{nodes}</div>;
+  };
+
   return (
     <div className="flex flex-col h-full min-h-0 w-full p-4 md:p-6">
       <Card className="flex-1 min-h-0 overflow-hidden flex flex-col bg-white border-violet-100 shadow-xl rounded-2xl">
@@ -141,7 +220,7 @@ export function ChatViewer({
               <FaSpinner className="animate-spin text-3xl" />
             </div>
           ) : messages.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full text-slate-400 space-y-4">
+            <div className="flex flex-col h-full text-slate-400 space-y-4">
               <FaRobot className="text-4xl opacity-20" />
               <p>Ask anything about this document!</p>
               <div className="flex flex-wrap gap-2 justify-center">
@@ -184,7 +263,7 @@ export function ChatViewer({
                     )}
                   </div>
                   <div
-                    className={`rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-sm whitespace-pre-wrap break-words ${
+                    className={`rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-sm break-words text-left ${
                       msg.role === "user"
                         ? "bg-violet-600 text-white rounded-tr-none"
                         : "bg-slate-50 text-slate-800 border border-slate-100 rounded-tl-none"
@@ -197,7 +276,7 @@ export function ChatViewer({
                         <span className="w-1.5 h-1.5 bg-violet-400 rounded-full animate-bounce" />
                       </span>
                     ) : (
-                      msg.content
+                      renderMessageContent(msg.content)
                     )}
                   </div>
                 </div>
